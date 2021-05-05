@@ -12,23 +12,22 @@ export class Fact {
   get value() {
     if (Object.keys(this).some(k => k.includes('nil'))) return 0;
 
-    let sign = +1;
+    return this.sign * this.inner * this.scale;
+  }
 
-    if (this.#fact['sign']) {
-      if (this.#fact['sign'] === '-') {
-        sign = -1;
-      } else {
-        throw new TypeError(`Unknown sign ${this.#fact['sign']}`);
-      }
-    }
+  get scale() {
+    return 10 ** (parseInt(this.#fact['scale']) || 0);
+  }
 
-    const scale = parseInt(this.#fact['scale']) || 0;
-
+  get inner() {
     if (typeof this.#fact['$t'] === 'string') {
-      return sign * parseFloat(formatNumber(this.#fact['format'], this.#fact['$t'])) * 10 ** scale;
+      return parseFloat(formatNumber(this.#fact['format'], this.#fact['$t']));
     }
+    return this.#fact['$t'];
+  }
 
-    return sign * this.#fact['$t'] * 10 ** scale;
+  get sign() {
+    return this.#fact['sign'] === '-' ? -1 : 1;
   }
 
   get context() {
@@ -37,6 +36,10 @@ export class Fact {
 
   get contextRef() {
     return this.#fact.contextRef;
+  }
+
+  computeValue(sign, scale) {
+    return;
   }
 
   static latest(a, b) {
