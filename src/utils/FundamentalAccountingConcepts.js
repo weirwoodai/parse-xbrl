@@ -6,12 +6,11 @@ export function loadFundamentalAccountingConcepts(xbrl) {
   xbrl.fields['CurrentAssets'] = xbrl.getFact('us-gaap:AssetsCurrent').getMostRecent()?.value || 0;
 
   // Noncurrent Assets
-  xbrl.fields['NoncurrentAssets'] = xbrl.getFact('us-gaap:AssetsNoncurrent').getMostRecent()?.value;
+  xbrl.fields['NoncurrentAssets'] =
+    xbrl.getFact('us-gaap:AssetsNoncurrent').getMostRecent()?.value || 0;
   if (!xbrl.fields['NoncurrentAssets']) {
     if (xbrl.fields['Assets'] && xbrl.fields['CurrentAssets']) {
       xbrl.fields['NoncurrentAssets'] = xbrl.fields['Assets'] - xbrl.fields['CurrentAssets'];
-    } else {
-      xbrl.fields['NoncurrentAssets'] = 0;
     }
   }
 
@@ -207,152 +206,168 @@ export function loadFundamentalAccountingConcepts(xbrl) {
 
   // Revenues
   xbrl.fields['Revenues'] =
-    xbrl.getDurationFactValue('us-gaap:Revenues') ||
-    xbrl.getDurationFactValue('us-gaap:SalesRevenueNet') ||
-    xbrl.getDurationFactValue('us-gaap:SalesRevenueServicesNet') ||
-    xbrl.getDurationFactValue('us-gaap:RevenuesNetOfInterestExpense') ||
-    xbrl.getDurationFactValue('us-gaap:RegulatedAndUnregulatedOperatingRevenue') ||
-    xbrl.getDurationFactValue('us-gaap:HealthCareOrganizationRevenue') ||
-    xbrl.getDurationFactValue('us-gaap:InterestAndDividendIncomeOperating') ||
-    xbrl.getDurationFactValue('us-gaap:RealEstateRevenueNet') ||
-    xbrl.getDurationFactValue('us-gaap:RevenueMineralSales') ||
-    xbrl.getDurationFactValue('us-gaap:OilAndGasRevenue') ||
-    xbrl.getDurationFactValue('us-gaap:FinancialServicesRevenue') ||
-    xbrl.getDurationFactValue('us-gaap:RegulatedAndUnregulatedOperatingRevenue') ||
+    xbrl.getFact('us-gaap:Revenues').getMostRecent()?.value ||
+    xbrl.getFact('us-gaap:SalesRevenueNet').getMostRecent()?.value ||
+    xbrl.getFact('us-gaap:SalesRevenueServicesNet').getMostRecent()?.value ||
+    xbrl.getFact('us-gaap:RevenuesNetOfInterestExpense').getMostRecent()?.value ||
+    xbrl.getFact('us-gaap:RegulatedAndUnregulatedOperatingRevenue').getMostRecent()?.value ||
+    xbrl.getFact('us-gaap:HealthCareOrganizationRevenue').getMostRecent()?.value ||
+    xbrl.getFact('us-gaap:InterestAndDividendIncomeOperating').getMostRecent()?.value ||
+    xbrl.getFact('us-gaap:RealEstateRevenueNet').getMostRecent()?.value ||
+    xbrl.getFact('us-gaap:RevenueMineralSales').getMostRecent()?.value ||
+    xbrl.getFact('us-gaap:OilAndGasRevenue').getMostRecent()?.value ||
+    xbrl.getFact('us-gaap:FinancialServicesRevenue').getMostRecent()?.value ||
+    xbrl.getFact('us-gaap:RegulatedAndUnregulatedOperatingRevenue').getMostRecent()?.value ||
     0;
 
   // CostOfRevenue
   xbrl.fields['CostOfRevenue'] =
-    xbrl.getDurationFactValue('us-gaap:CostOfRevenue') ||
-    xbrl.getDurationFactValue('us-gaap:CostOfServices') ||
-    xbrl.getDurationFactValue('us-gaap:CostOfGoodsSold') ||
-    xbrl.getDurationFactValue('us-gaap:CostOfGoodsAndServicesSold') ||
+    xbrl.getFact('us-gaap:CostOfRevenue').getMostRecent()?.value ||
+    xbrl.getFact('us-gaap:CostOfServices').getMostRecent()?.value ||
+    xbrl.getFact('us-gaap:CostOfGoodsSold').getMostRecent()?.value ||
+    xbrl.getFact('us-gaap:CostOfGoodsAndServicesSold').getMostRecent()?.value ||
     0;
 
   // GrossProfit
-  xbrl.fields['GrossProfit'] = xbrl.getDurationFactValue('us-gaap:GrossProfit') || 0;
+  xbrl.fields['GrossProfit'] = xbrl.getFact('us-gaap:GrossProfit').getMostRecent()?.value || 0;
 
   // OperatingExpenses
   xbrl.fields['OperatingExpenses'] =
-    xbrl.getDurationFactValue('us-gaap:OperatingExpenses') ||
-    xbrl.getDurationFactValue('us-gaap:OperatingCostsAndExpenses') ||
+    xbrl.getFact('us-gaap:OperatingExpenses').getMostRecent()?.value ||
+    xbrl.getFact('us-gaap:OperatingCostsAndExpenses').getMostRecent()?.value ||
     0;
 
   // CostsAndExpenses
-  xbrl.fields['CostsAndExpenses'] = xbrl.getDurationFactValue('us-gaap:CostsAndExpenses') || 0;
+  xbrl.fields['CostsAndExpenses'] =
+    xbrl.getFact('us-gaap:CostsAndExpenses').getMostRecent()?.value || 0;
 
   // OtherOperatingIncome
   xbrl.fields['OtherOperatingIncome'] =
-    xbrl.getDurationFactValue('us-gaap:OtherOperatingIncome') || 0;
+    xbrl.getFact('us-gaap:OtherOperatingIncome').getMostRecent()?.value || 0;
 
   // OperatingIncomeLoss
   xbrl.fields['OperatingIncomeLoss'] =
-    xbrl.getDurationFactValue('us-gaap:OperatingIncomeLoss') || 0;
+    xbrl.getFact('us-gaap:OperatingIncomeLoss').getMostRecent()?.value || 0;
 
   // NonoperatingIncomeLoss
   xbrl.fields['NonoperatingIncomeLoss'] =
-    xbrl.getDurationFactValue('us-gaap:NonoperatingIncomeExpense') || 0;
+    xbrl.getFact('us-gaap:NonoperatingIncomeExpense').getMostRecent()?.value || 0;
 
   // InterestAndDebtExpense
   xbrl.fields['InterestAndDebtExpense'] =
-    xbrl.getDurationFactValue('us-gaap:InterestAndDebtExpense') || 0;
+    xbrl.getFact('us-gaap:InterestAndDebtExpense').getMostRecent()?.value || 0;
 
   // IncomeBeforeEquityMethodInvestments
   xbrl.fields['IncomeBeforeEquityMethodInvestments'] =
-    xbrl.getDurationFactValue(
-      'us-gaap:IncomeLossFromContinuingOperationsBeforeIncomeTaxesMinorityInterestAndIncomeLossFromEquityMethodInvestments'
-    ) || 0;
+    xbrl
+      .getFact(
+        'us-gaap:IncomeLossFromContinuingOperationsBeforeIncomeTaxesMinorityInterestAndIncomeLossFromEquityMethodInvestments'
+      )
+      .getMostRecent()?.value || 0;
 
   // IncomeFromEquityMethodInvestments
   xbrl.fields['IncomeFromEquityMethodInvestments'] =
-    xbrl.getDurationFactValue('us-gaap:IncomeLossFromEquityMethodInvestments') || 0;
+    xbrl.getFact('us-gaap:IncomeLossFromEquityMethodInvestments').getMostRecent()?.value || 0;
 
   // IncomeFromContinuingOperationsBeforeTax
   xbrl.fields['IncomeFromContinuingOperationsBeforeTax'] =
-    xbrl.getDurationFactValue(
-      'us-gaap:IncomeLossFromContinuingOperationsBeforeIncomeTaxesMinorityInterestAndIncomeLossFromEquityMethodInvestments'
-    ) ||
-    xbrl.getDurationFactValue(
-      'us-gaap:IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest'
-    ) ||
+    xbrl
+      .getFact(
+        'us-gaap:IncomeLossFromContinuingOperationsBeforeIncomeTaxesMinorityInterestAndIncomeLossFromEquityMethodInvestments'
+      )
+      .getMostRecent()?.value ||
+    xbrl
+      .getFact(
+        'us-gaap:IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest'
+      )
+      .getMostRecent()?.value ||
     0;
 
   // IncomeTaxExpenseBenefit
   xbrl.fields['IncomeTaxExpenseBenefit'] =
-    xbrl.getDurationFactValue('us-gaap:IncomeTaxExpenseBenefit') ||
-    xbrl.getDurationFactValue('us-gaap:IncomeTaxExpenseBenefitContinuingOperations') ||
+    xbrl.getFact('us-gaap:IncomeTaxExpenseBenefit').getMostRecent()?.value ||
+    xbrl.getFact('us-gaap:IncomeTaxExpenseBenefitContinuingOperations').getMostRecent()?.value ||
     0;
 
   // IncomeFromContinuingOperationsAfterTax
   xbrl.fields['IncomeFromContinuingOperationsAfterTax'] =
-    xbrl.getDurationFactValue(
-      'us-gaap:IncomeLossBeforeExtraordinaryItemsAndCumulativeEffectOfChangeInAccountingPrinciple'
-    ) || 0;
+    xbrl
+      .getFact(
+        'us-gaap:IncomeLossBeforeExtraordinaryItemsAndCumulativeEffectOfChangeInAccountingPrinciple'
+      )
+      .getMostRecent()?.value || 0;
 
   // IncomeFromDiscontinuedOperations
   xbrl.fields['IncomeFromDiscontinuedOperations'] =
-    xbrl.getDurationFactValue('us-gaap:IncomeLossFromDiscontinuedOperationsNetOfTax') ||
-    xbrl.getDurationFactValue(
-      'us-gaap:DiscontinuedOperationGainLossOnDisposalOfDiscontinuedOperationNetOfTax'
-    ) ||
-    xbrl.getDurationFactValue(
-      'us-gaap:IncomeLossFromDiscontinuedOperationsNetOfTaxAttributableToReportingEntity'
-    ) ||
+    xbrl.getFact('us-gaap:IncomeLossFromDiscontinuedOperationsNetOfTax').getMostRecent()?.value ||
+    xbrl
+      .getFact('us-gaap:DiscontinuedOperationGainLossOnDisposalOfDiscontinuedOperationNetOfTax')
+      .getMostRecent()?.value ||
+    xbrl
+      .getFact('us-gaap:IncomeLossFromDiscontinuedOperationsNetOfTaxAttributableToReportingEntity')
+      .getMostRecent()?.value ||
     0;
 
   // ExtraordinaryItemsGainLoss
   xbrl.fields['ExtraordinaryItemsGainLoss'] =
-    xbrl.getDurationFactValue('us-gaap:ExtraordinaryItemNetOfTax') || 0;
+    xbrl.getFact('us-gaap:ExtraordinaryItemNetOfTax').getMostRecent()?.value || 0;
 
   // NetIncomeLoss
   xbrl.fields['NetIncomeLoss'] =
-    xbrl.getDurationFactValue('us-gaap:ProfitLoss') ||
-    xbrl.getDurationFactValue('us-gaap:NetIncomeLoss') ||
-    xbrl.getDurationFactValue('us-gaap:NetIncomeLossAvailableToCommonStockholdersBasic') ||
-    xbrl.getDurationFactValue('us-gaap:IncomeLossFromContinuingOperations') ||
-    xbrl.getDurationFactValue('us-gaap:IncomeLossAttributableToParent') ||
-    xbrl.getDurationFactValue(
-      'us-gaap:IncomeLossFromContinuingOperationsIncludingPortionAttributableToNoncontrollingInterest'
-    ) ||
+    xbrl.getFact('us-gaap:ProfitLoss').getMostRecent()?.value ||
+    xbrl.getFact('us-gaap:NetIncomeLoss').getMostRecent()?.value ||
+    xbrl.getFact('us-gaap:NetIncomeLossAvailableToCommonStockholdersBasic').getMostRecent()
+      ?.value ||
+    xbrl.getFact('us-gaap:IncomeLossFromContinuingOperations').getMostRecent()?.value ||
+    xbrl.getFact('us-gaap:IncomeLossAttributableToParent').getMostRecent()?.value ||
+    xbrl
+      .getFact(
+        'us-gaap:IncomeLossFromContinuingOperationsIncludingPortionAttributableToNoncontrollingInterest'
+      )
+      .getMostRecent()?.value ||
     0;
 
   // NetIncomeAvailableToCommonStockholdersBasic
   xbrl.fields['NetIncomeAvailableToCommonStockholdersBasic'] =
-    xbrl.getDurationFactValue('us-gaap:NetIncomeLossAvailableToCommonStockholdersBasic') || 0;
+    xbrl.getFact('us-gaap:NetIncomeLossAvailableToCommonStockholdersBasic').getMostRecent()
+      ?.value || 0;
 
   // #PreferredStockDividendsAndOtherAdjustments
   xbrl.fields['PreferredStockDividendsAndOtherAdjustments'] =
-    xbrl.getDurationFactValue('us-gaap:PreferredStockDividendsAndOtherAdjustments') || 0;
+    xbrl.getFact('us-gaap:PreferredStockDividendsAndOtherAdjustments').getMostRecent()?.value || 0;
 
   // #NetIncomeAttributableToNoncontrollingInterest
   xbrl.fields['NetIncomeAttributableToNoncontrollingInterest'] =
-    xbrl.getDurationFactValue('us-gaap:NetIncomeLossAttributableToNoncontrollingInterest') || 0;
+    xbrl.getFact('us-gaap:NetIncomeLossAttributableToNoncontrollingInterest').getMostRecent()
+      ?.value || 0;
 
   // #NetIncomeAttributableToParent
   xbrl.fields['NetIncomeAttributableToParent'] =
-    xbrl.getDurationFactValue('us-gaap:NetIncomeLoss') || 0;
+    xbrl.getFact('us-gaap:NetIncomeLoss').getMostRecent()?.value || 0;
 
   // OtherComprehensiveIncome
   xbrl.fields['OtherComprehensiveIncome'] =
-    xbrl.getDurationFactValue('us-gaap:OtherComprehensiveIncomeLossNetOfTax') || 0;
+    xbrl.getFact('us-gaap:OtherComprehensiveIncomeLossNetOfTax').getMostRecent()?.value || 0;
 
   // ComprehensiveIncome
   xbrl.fields['ComprehensiveIncome'] =
-    xbrl.getDurationFactValue(
-      'us-gaap:ComprehensiveIncomeNetOfTaxIncludingPortionAttributableToNoncontrollingInterest'
-    ) ||
-    xbrl.getDurationFactValue('us-gaap:ComprehensiveIncomeNetOfTax') ||
+    xbrl
+      .getFact(
+        'us-gaap:ComprehensiveIncomeNetOfTaxIncludingPortionAttributableToNoncontrollingInterest'
+      )
+      .getMostRecent()?.value ||
+    xbrl.getFact('us-gaap:ComprehensiveIncomeNetOfTax').getMostRecent()?.value ||
     0;
 
   // ComprehensiveIncomeAttributableToParent
   xbrl.fields['ComprehensiveIncomeAttributableToParent'] =
-    xbrl.getDurationFactValue('us-gaap:ComprehensiveIncomeNetOfTax') || 0;
+    xbrl.getFact('us-gaap:ComprehensiveIncomeNetOfTax').getMostRecent()?.value || 0;
 
   // ComprehensiveIncomeAttributableToNoncontrollingInterest
   xbrl.fields['ComprehensiveIncomeAttributableToNoncontrollingInterest'] =
-    xbrl.getDurationFactValue(
-      'us-gaap:ComprehensiveIncomeNetOfTaxAttributableToNoncontrollingInterest'
-    ) || 0;
+    xbrl
+      .getFact('us-gaap:ComprehensiveIncomeNetOfTaxAttributableToNoncontrollingInterest')
+      .getMostRecent()?.value || 0;
 
   // 'Adjustments to income statement information
   // Impute: NonoperatingIncomeLossPlusInterestAndDebtExpense
@@ -631,71 +646,72 @@ export function loadFundamentalAccountingConcepts(xbrl) {
 
   // NetCashFlow
   xbrl.fields['NetCashFlow'] =
-    xbrl.getDurationFactValue('us-gaap:CashAndCashEquivalentsPeriodIncreaseDecrease') ||
-    xbrl.getDurationFactValue('us-gaap:CashPeriodIncreaseDecrease') ||
-    xbrl.getDurationFactValue('us-gaap:NetCashProvidedByUsedInContinuingOperations') ||
+    xbrl.getFact('us-gaap:CashAndCashEquivalentsPeriodIncreaseDecrease').getMostRecent()?.value ||
+    xbrl.getFact('us-gaap:CashPeriodIncreaseDecrease').getMostRecent()?.value ||
+    xbrl.getFact('us-gaap:NetCashProvidedByUsedInContinuingOperations').getMostRecent()?.value ||
     0;
 
   // NetCashFlowsOperating
   xbrl.fields['NetCashFlowsOperating'] =
-    xbrl.getDurationFactValue('us-gaap:NetCashProvidedByUsedInOperatingActivities') || 0;
+    xbrl.getFact('us-gaap:NetCashProvidedByUsedInOperatingActivities').getMostRecent()?.value || 0;
 
   // NetCashFlowsInvesting
   xbrl.fields['NetCashFlowsInvesting'] =
-    xbrl.getDurationFactValue('us-gaap:NetCashProvidedByUsedInInvestingActivities') || 0;
+    xbrl.getFact('us-gaap:NetCashProvidedByUsedInInvestingActivities').getMostRecent()?.value || 0;
 
   // NetCashFlowsFinancing
   xbrl.fields['NetCashFlowsFinancing'] =
-    xbrl.getDurationFactValue('us-gaap:NetCashProvidedByUsedInFinancingActivities') || 0;
+    xbrl.getFact('us-gaap:NetCashProvidedByUsedInFinancingActivities').getMostRecent()?.value || 0;
 
   // NetCashFlowsOperatingContinuing
   xbrl.fields['NetCashFlowsOperatingContinuing'] =
-    xbrl.getDurationFactValue(
-      'us-gaap:NetCashProvidedByUsedInOperatingActivitiesContinuingOperations'
-    ) || 0;
+    xbrl
+      .getFact('us-gaap:NetCashProvidedByUsedInOperatingActivitiesContinuingOperations')
+      .getMostRecent()?.value || 0;
 
   // NetCashFlowsInvestingContinuing
   xbrl.fields['NetCashFlowsInvestingContinuing'] =
-    xbrl.getDurationFactValue(
-      'us-gaap:NetCashProvidedByUsedInInvestingActivitiesContinuingOperations'
-    ) || 0;
+    xbrl
+      .getFact('us-gaap:NetCashProvidedByUsedInInvestingActivitiesContinuingOperations')
+      .getMostRecent()?.value || 0;
   // NetCashFlowsFinancingContinuing
   xbrl.fields['NetCashFlowsFinancingContinuing'] =
-    xbrl.getDurationFactValue(
-      'us-gaap:NetCashProvidedByUsedInFinancingActivitiesContinuingOperations'
-    ) || 0;
+    xbrl
+      .getFact('us-gaap:NetCashProvidedByUsedInFinancingActivitiesContinuingOperations')
+      .getMostRecent()?.value || 0;
 
   // NetCashFlowsOperatingDiscontinued
   xbrl.fields['NetCashFlowsOperatingDiscontinued'] =
-    xbrl.getDurationFactValue(
-      'us-gaap:CashProvidedByUsedInOperatingActivitiesDiscontinuedOperations'
-    ) || 0;
+    xbrl
+      .getFact('us-gaap:CashProvidedByUsedInOperatingActivitiesDiscontinuedOperations')
+      .getMostRecent()?.value || 0;
 
   // NetCashFlowsInvestingDiscontinued
   xbrl.fields['NetCashFlowsInvestingDiscontinued'] =
-    xbrl.getDurationFactValue(
-      'us-gaap:CashProvidedByUsedInInvestingActivitiesDiscontinuedOperations'
-    ) || 0;
+    xbrl
+      .getFact('us-gaap:CashProvidedByUsedInInvestingActivitiesDiscontinuedOperations')
+      .getMostRecent()?.value || 0;
 
   // NetCashFlowsFinancingDiscontinued
   xbrl.fields['NetCashFlowsFinancingDiscontinued'] =
-    xbrl.getDurationFactValue(
-      'us-gaap:CashProvidedByUsedInFinancingActivitiesDiscontinuedOperations'
-    ) || 0;
+    xbrl
+      .getFact('us-gaap:CashProvidedByUsedInFinancingActivitiesDiscontinuedOperations')
+      .getMostRecent()?.value || 0;
 
   // NetCashFlowsDiscontinued
   xbrl.fields['NetCashFlowsDiscontinued'] =
-    xbrl.getDurationFactValue('us-gaap:NetCashProvidedByUsedInDiscontinuedOperations') || 0;
+    xbrl.getFact('us-gaap:NetCashProvidedByUsedInDiscontinuedOperations').getMostRecent()?.value ||
+    0;
 
   // ExchangeGainsLosses
   xbrl.fields['ExchangeGainsLosses'] =
-    xbrl.getDurationFactValue('us-gaap:EffectOfExchangeRateOnCashAndCashEquivalents') ||
-    xbrl.getDurationFactValue(
-      'us-gaap:EffectOfExchangeRateOnCashAndCashEquivalentsContinuingOperations'
-    ) ||
-    xbrl.getDurationFactValue(
-      'us-gaap:CashProvidedByUsedInFinancingActivitiesDiscontinuedOperations'
-    ) ||
+    xbrl.getFact('us-gaap:EffectOfExchangeRateOnCashAndCashEquivalents').getMostRecent()?.value ||
+    xbrl
+      .getFact('us-gaap:EffectOfExchangeRateOnCashAndCashEquivalentsContinuingOperations')
+      .getMostRecent()?.value ||
+    xbrl
+      .getFact('us-gaap:CashProvidedByUsedInFinancingActivitiesDiscontinuedOperations')
+      .getMostRecent()?.value ||
     0;
 
   // Adjustments

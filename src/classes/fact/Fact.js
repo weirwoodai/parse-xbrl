@@ -12,13 +12,23 @@ export class Fact {
   get value() {
     if (Object.keys(this).some(k => k.includes('nil'))) return 0;
 
+    let sign = +1;
+
+    if (this.#fact['sign']) {
+      if (this.#fact['sign'] === '-') {
+        sign = -1;
+      } else {
+        throw new TypeError(`Unknown sign ${this.#fact['sign']}`);
+      }
+    }
+
     const scale = parseInt(this.#fact['scale']) || 0;
 
     if (typeof this.#fact['$t'] === 'string') {
-      return parseFloat(formatNumber(this.#fact['format'], this.#fact['$t'])) * 10 ** scale;
+      return sign * parseFloat(formatNumber(this.#fact['format'], this.#fact['$t'])) * 10 ** scale;
     }
 
-    return this.#fact['$t'] * 10 ** scale;
+    return sign * this.#fact['$t'] * 10 ** scale;
   }
 
   get context() {
