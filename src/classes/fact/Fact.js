@@ -40,6 +40,7 @@ export class Fact {
 
   computeValue(sign, scale) {
     return;
+    add;
   }
 
   static latest(a, b) {
