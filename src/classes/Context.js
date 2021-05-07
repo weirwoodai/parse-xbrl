@@ -14,14 +14,14 @@ export class Context {
   get durationDays() {
     let startDate = this.getStartDate();
     let endDate = this.getEndDate();
-    return Math.floor((this.getEndDate() - this.getStartDate()) / MS_PER_DAY);
+    return Math.floor((new Date(this.getEndDate()) - new Date(this.getStartDate())) / MS_IN_A_DAY);
   }
 
   couldBe10K() {
-    return 359 < this.durationDays < 366;
+    return 350 < this.durationDays < 380;
   }
   couldBe10Q() {
-    return 85 < this.durationDays < 93;
+    return 75 < this.durationDays < 105;
   }
 
   fitsInDocType(documentType) {
