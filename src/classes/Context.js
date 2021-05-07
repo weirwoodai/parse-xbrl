@@ -12,8 +12,6 @@ export class Context {
   }
 
   get durationDays() {
-    let startDate = this.getStartDate();
-    let endDate = this.getEndDate();
     return Math.floor((new Date(this.getEndDate()) - new Date(this.getStartDate())) / MS_IN_A_DAY);
   }
 
