@@ -56,7 +56,7 @@ describe('parse-xbrl', function () {
     .timeout(5000)
     .slow(3125);
 
-  it('should parse the xbrl for Apple 10Q 2020', async () => {
+  it.only('should parse the xbrl for Apple 10Q 2020', async () => {
     const result = await parse('./test/sampleXbrlDocuments/xbrls/2020/aapl/xml_0.xml');
 
     expect(result).to.deep.equal(aapl10Q2020Parsed);

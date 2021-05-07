@@ -38,6 +38,10 @@ export class Fact {
     return this.#fact.contextRef;
   }
 
+  fitsInDocType(documentType) {
+    return this.context.fitsInDocType(documentType);
+  }
+
   computeValue(sign, scale) {
     return;
     add;

@@ -11,6 +11,25 @@ export class Context {
     return this.#context.id;
   }
 
+  get durationDays() {
+    let startDate = this.getStartDate();
+    let endDate = this.getEndDate();
+    return Math.floor((this.getEndDate() - this.getStartDate()) / MS_PER_DAY);
+  }
+
+  couldBe10K() {
+    return 359 < this.durationDays < 366;
+  }
+  couldBe10Q() {
+    return 85 < this.durationDays < 93;
+  }
+
+  fitsInDocType(documentType) {
+    if (this.isInstant()) return true;
+    if (documentType === '10-K') return this.couldBe10K();
+    if (documentType === '10-Q') return this.couldBe10Q();
+  }
+
   isDuration() {
     return !this.isInstant();
   }
@@ -84,7 +103,9 @@ export class Context {
   }
 
   represents(node, date) {
-    return this.id === node.contextRef && this.isSameDate(date, MS_IN_A_DAY) && !this.hasExplicitMember();
+    return (
+      this.id === node.contextRef && this.isSameDate(date, MS_IN_A_DAY) && !this.hasExplicitMember()
+    );
   }
 
   startsBefore(date) {

@@ -45,6 +45,8 @@ export class XbrlParser {
     this.loadField('DocumentFiscalPeriodFocus', 'DocumentFiscalPeriodFocusContext', 'contextRef');
     this.loadField('DocumentType');
 
+    this.documentType = this.fields['DocumentType'];
+
     const currentYearEnd = this.getYear();
     if (!currentYearEnd) throw new Error('No end year found');
 
@@ -205,7 +207,7 @@ export class XbrlParser {
   }
 
   getFact(concept) {
-    return new Facts(search(this.document, concept), this.getContexts());
+    return new Facts(search(this.document, concept), this.getContexts(), this.documentType);
   }
 }
 

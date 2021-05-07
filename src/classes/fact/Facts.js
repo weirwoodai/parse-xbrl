@@ -2,12 +2,16 @@ import { Fact } from './Fact.js';
 export class Facts {
   #facts;
   #contexts;
-  constructor(facts, contexts) {
+  #documentType;
+
+  constructor(facts, contexts, documentType) {
     const toHashMap = (hashMap, b) => ({ ...hashMap, [b.id]: b });
     this.#contexts = contexts.filter(c => !c.hasExplicitMember()).reduce(toHashMap, {});
     this.#facts = facts
       .filter(f => this.#contexts[f.contextRef])
       .map(f => new Fact(f, this.#contexts[f.contextRef]));
+
+    this.#documentType = documentType;
   }
 
   get facts() {
@@ -16,6 +20,6 @@ export class Facts {
 
   getMostRecent() {
     if (this.#facts.length === 0) return null;
-    return this.#facts.reduce(Fact.latest);
+    return this.#facts.filter(f => f.fitsInDocType(this.#documentType))?.reduce(Fact.latest);
   }
 }
