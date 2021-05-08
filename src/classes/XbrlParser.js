@@ -207,8 +207,11 @@ export class XbrlParser {
   }
 
   getFact(concept) {
-    return new Facts(search(this.document, concept), this.getContexts(), this.documentType);
+    return new Facts(this, concept);
+    // return new Facts(search(this.document, concept), this.getContexts(), this.documentType);
   }
 }
 
 export default XbrlParser;
+// i526a018599e94bbcb5c99ec1159f1a4d_D20200329-20200627
+// us-gaap:NetIncomeLoss

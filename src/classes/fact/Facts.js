@@ -1,17 +1,24 @@
 import { Fact } from './Fact.js';
+import { search } from '../../utils/utils.js';
 export class Facts {
   #facts;
   #contexts;
   #documentType;
+  #concept;
 
-  constructor(facts, contexts, documentType) {
+  constructor(xbrlParser, concept) {
     const toHashMap = (hashMap, b) => ({ ...hashMap, [b.id]: b });
+
+    const contexts = xbrlParser.getContexts();
     this.#contexts = contexts.filter(c => !c.hasExplicitMember()).reduce(toHashMap, {});
+
+    const facts = search(xbrlParser.document, concept);
     this.#facts = facts
       .filter(f => this.#contexts[f.contextRef])
-      .map(f => new Fact(f, this.#contexts[f.contextRef]));
+      .map(f => new Fact(concept, f, this.#contexts[f.contextRef]));
 
-    this.#documentType = documentType;
+    this.#concept = concept;
+    this.#documentType = xbrlParser.documentType;
   }
 
   get facts() {

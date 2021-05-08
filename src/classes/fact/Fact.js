@@ -1,12 +1,18 @@
 import { formatNumber } from '../../utils/utils.js';
 
 export class Fact {
-  #context;
+  #concept;
   #fact;
+  #context;
 
-  constructor(fact, context) {
+  constructor(concept, fact, context) {
+    this.#concept = concept;
     this.#fact = fact;
     this.#context = context;
+  }
+
+  get concept() {
+    return this.#concept;
   }
 
   get value() {
@@ -40,11 +46,6 @@ export class Fact {
 
   fitsInDocType(documentType) {
     return this.context.fitsInDocType(documentType);
-  }
-
-  computeValue(sign, scale) {
-    return;
-    add;
   }
 
   static latest(a, b) {
