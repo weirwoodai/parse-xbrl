@@ -1,6 +1,11 @@
 import { getVariable } from '../utils/utils.js';
 const MS_IN_A_DAY = 24 * 60 * 60 * 1000;
 
+const TWO_WEEKS_TO_YEAR_END = 350;
+const TWO_WEEKS_FROM_YEAR_END = 380;
+const TWO_WEEKS_TO_QUARTER_END = 75;
+const TWO_WEEKS_FROM_QUARTER_END = 105;
+
 export class Context {
   #context;
   constructor(context) {
@@ -16,10 +21,13 @@ export class Context {
   }
 
   couldBe10K() {
-    return 350 < this.durationDays < 380;
+    return TWO_WEEKS_TO_YEAR_END < this.durationDays && this.durationDays < TWO_WEEKS_FROM_YEAR_END;
   }
+
   couldBe10Q() {
-    return 75 < this.durationDays < 105;
+    return (
+      TWO_WEEKS_TO_QUARTER_END < this.durationDays && this.durationDays < TWO_WEEKS_FROM_QUARTER_END
+    );
   }
 
   fitsInDocType(documentType) {
