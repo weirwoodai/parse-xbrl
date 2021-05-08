@@ -26,7 +26,8 @@ export class Facts {
   }
 
   getMostRecent() {
-    if (this.#facts.length === 0) return null;
-    return this.#facts.filter(f => f.fitsInDocType(this.#documentType))?.reduce(Fact.latest);
+    const filtered = this.#facts.filter(f => f.fitsInDocType(this.#documentType));
+    if (filtered.length === 0) return null;
+    return filtered.reduce(Fact.latest);
   }
 }
