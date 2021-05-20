@@ -19,7 +19,7 @@ describe('parse-xbrl', function () {
     expect(result).to.deep.equal(amazon10kParsed);
   });
 
-  it('should parse the xbrl for Cannabics Pharmaceuticals Inc. 10k', async () => {
+  it.only('should parse the xbrl for Cannabics Pharmaceuticals Inc. 10k', async () => {
     const result = await parse('./test/sampleXbrlDocuments/cannabics_pharmaceuticals_inc_10k.xml');
     expect(result).to.deep.equal(cannabicsPharma10kParsed);
   });
@@ -56,7 +56,7 @@ describe('parse-xbrl', function () {
     .timeout(5000)
     .slow(3125);
 
-  it.only('should parse the xbrl for Apple 10Q 2020', async () => {
+  it('should parse the xbrl for Apple 10Q 2020', async () => {
     const result = await parse('./test/sampleXbrlDocuments/xbrls/2020/aapl/xml_0.xml');
 
     expect(result).to.deep.equal(aapl10Q2020Parsed);
@@ -411,11 +411,11 @@ function loadData() {
     IncomeFromContinuingOperationsAfterTax: -1279138,
     IncomeFromDiscontinuedOperations: 0,
     ExtraordinaryItemsGainLoss: 0,
-    NetIncomeLoss: -1279138,
-    NetIncomeAvailableToCommonStockholdersBasic: -1279138,
+    NetIncomeLoss: -541387,
+    NetIncomeAvailableToCommonStockholdersBasic: -541387,
     PreferredStockDividendsAndOtherAdjustments: 0,
     NetIncomeAttributableToNoncontrollingInterest: 0,
-    NetIncomeAttributableToParent: -1279138,
+    NetIncomeAttributableToParent: -541387,
     OtherComprehensiveIncome: 0,
     ComprehensiveIncome: -1279138,
     ComprehensiveIncomeAttributableToParent: -1279138,

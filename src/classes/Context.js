@@ -1,13 +1,14 @@
 import { getVariable } from '../utils/utils.js';
 const MS_IN_A_DAY = 24 * 60 * 60 * 1000;
 
-const TWO_WEEKS_TO_YEAR_END = 350;
-const TWO_WEEKS_FROM_YEAR_END = 380;
-const TWO_WEEKS_TO_QUARTER_END = 75;
-const TWO_WEEKS_FROM_QUARTER_END = 105;
+const TWO_WEEKS_TO_YEAR_END = 12 * 30 - 15;
+const TWO_WEEKS_FROM_YEAR_END = 12 * 30 + 15;
+const TWO_WEEKS_TO_QUARTER_END = 3 * 30 - 15;
+const TWO_WEEKS_FROM_QUARTER_END = 3 * 30 + 15;
 
 export class Context {
   #context;
+
   constructor(context) {
     this.#context = context;
   }
@@ -17,23 +18,27 @@ export class Context {
   }
 
   get durationDays() {
-    return Math.floor((new Date(this.getEndDate()) - new Date(this.getStartDate())) / MS_IN_A_DAY);
+    const startDate = new Date(this.getStartDate());
+    const endDate = new Date(this.getEndDate());
+    return Math.floor((endDate - startDate) / MS_IN_A_DAY);
   }
 
-  couldBe10K() {
+  _qualifiesAs10K() {
     return TWO_WEEKS_TO_YEAR_END < this.durationDays && this.durationDays < TWO_WEEKS_FROM_YEAR_END;
   }
 
-  couldBe10Q() {
+  _qualifiesAs10Q() {
     return (
       TWO_WEEKS_TO_QUARTER_END < this.durationDays && this.durationDays < TWO_WEEKS_FROM_QUARTER_END
     );
   }
 
-  fitsInDocType(documentType) {
+  qualifiesAs(type) {
     if (this.isInstant()) return true;
-    if (documentType === '10-K') return this.couldBe10K();
-    if (documentType === '10-Q') return this.couldBe10Q();
+    if (type === '10-K') return this._qualifiesAs10K();
+    if (type === '10-Q') return this._qualifiesAs10Q();
+
+    throw new Error(`Unknown ${type}!`);
   }
 
   isDuration() {

@@ -1,10 +1,10 @@
+import { Context } from '../Context.js';
 import { Fact } from './Fact.js';
 import { search } from '../../utils/utils.js';
+
 export class Facts {
   #facts;
   #contexts;
-  #documentType;
-  #concept;
 
   constructor(xbrlParser, concept) {
     const toHashMap = (hashMap, b) => ({ ...hashMap, [b.id]: b });
@@ -14,11 +14,9 @@ export class Facts {
 
     const facts = search(xbrlParser.document, concept);
     this.#facts = facts
-      .filter(f => this.#contexts[f.contextRef])
-      .map(f => new Fact(concept, f, this.#contexts[f.contextRef]));
-
-    this.#concept = concept;
-    this.#documentType = xbrlParser.documentType;
+      .filter(f => this.#contexts[f.contextRef] instanceof Context)
+      .map(f => new Fact(concept, f, this.#contexts[f.contextRef]))
+      .filter(f => f.qualifiesAs(xbrlParser.documentType));
   }
 
   get facts() {
@@ -26,8 +24,7 @@ export class Facts {
   }
 
   getMostRecent() {
-    const filtered = this.#facts.filter(f => f.fitsInDocType(this.#documentType));
-    if (filtered.length === 0) return null;
-    return filtered.reduce(Fact.latest);
+    if (this.#facts.length === 0) return null;
+    return this.#facts.reduce(Fact.latest);
   }
 }

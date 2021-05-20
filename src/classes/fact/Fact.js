@@ -44,8 +44,8 @@ export class Fact {
     return this.#fact.contextRef;
   }
 
-  fitsInDocType(documentType) {
-    return this.context.fitsInDocType(documentType);
+  qualifiesAs(type) {
+    return this.context.qualifiesAs(type);
   }
 
   static latest(a, b) {
