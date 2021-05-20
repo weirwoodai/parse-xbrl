@@ -1,14 +1,44 @@
-import { getVariable } from './utils.js';
+import { getVariable } from '../utils/utils.js';
 const MS_IN_A_DAY = 24 * 60 * 60 * 1000;
+
+const TWO_WEEKS_TO_YEAR_END = 12 * 30 - 15;
+const TWO_WEEKS_FROM_YEAR_END = 12 * 30 + 15;
+const TWO_WEEKS_TO_QUARTER_END = 3 * 30 - 15;
+const TWO_WEEKS_FROM_QUARTER_END = 3 * 30 + 15;
 
 export class Context {
   #context;
+
   constructor(context) {
     this.#context = context;
   }
 
   get id() {
     return this.#context.id;
+  }
+
+  get durationDays() {
+    const startDate = new Date(this.getStartDate());
+    const endDate = new Date(this.getEndDate());
+    return Math.floor((endDate - startDate) / MS_IN_A_DAY);
+  }
+
+  _qualifiesAs10K() {
+    return TWO_WEEKS_TO_YEAR_END < this.durationDays && this.durationDays < TWO_WEEKS_FROM_YEAR_END;
+  }
+
+  _qualifiesAs10Q() {
+    return (
+      TWO_WEEKS_TO_QUARTER_END < this.durationDays && this.durationDays < TWO_WEEKS_FROM_QUARTER_END
+    );
+  }
+
+  qualifiesAs(type) {
+    if (this.isInstant()) return true;
+    if (type === '10-K') return this._qualifiesAs10K();
+    if (type === '10-Q') return this._qualifiesAs10Q();
+
+    throw new Error(`Unknown ${type}!`);
   }
 
   isDuration() {
@@ -84,10 +114,16 @@ export class Context {
   }
 
   represents(node, date) {
-    return this.id === node.contextRef && this.isSameDate(date, MS_IN_A_DAY) && !this.hasExplicitMember();
+    return (
+      this.id === node.contextRef && this.isSameDate(date, MS_IN_A_DAY) && !this.hasExplicitMember()
+    );
   }
 
   startsBefore(date) {
     return new Date(this.getStartDate()) <= new Date(date);
+  }
+
+  endsBefore(date) {
+    return new Date(this.getEndDate()) <= new Date(date);
   }
 }

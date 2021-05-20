@@ -8,93 +8,71 @@ const {
   transatlanticCapital10kParsed,
   sweetsAndTreats10qParsed,
   rubyTuesday10qParsed,
-  google10kParsed
+  google10kParsed,
+  aapl10Q2020Parsed,
+  tsla10Q2020Parsed
 } = loadData();
 
 describe('parse-xbrl', function () {
   it('should parse the xbrl for Amazon 10k', async () => {
     const result = await parse('./test/sampleXbrlDocuments/amazon_10k.xml');
-
-    for (const field in result) {
-      if (amazon10kParsed[field]) {
-        expect(result[field]).to.deep.equal(amazon10kParsed[field], `At field ${field}`);
-      }
-    }
+    expect(result).to.deep.equal(amazon10kParsed);
   });
 
-  it('should parse the xbrl for Cannabics Pharmaceuticals Inc. 10k', async () => {
-    var result = await parse('./test/sampleXbrlDocuments/cannabics_pharmaceuticals_inc_10k.xml');
-
-    for (const field in result) {
-      if (cannabicsPharma10kParsed[field]) {
-        expect(result[field]).to.deep.equal(cannabicsPharma10kParsed[field], `At field ${field}`);
-      }
-    }
+  it.only('should parse the xbrl for Cannabics Pharmaceuticals Inc. 10k', async () => {
+    const result = await parse('./test/sampleXbrlDocuments/cannabics_pharmaceuticals_inc_10k.xml');
+    expect(result).to.deep.equal(cannabicsPharma10kParsed);
   });
 
   it('should parse the xbrl for Costco Inc. 10k', async () => {
     const result = await parse('./test/sampleXbrlDocuments/costco_inc_10k.xml');
-
-    for (const field in result) {
-      if (costco10kParsed[field]) {
-        expect(result[field]).to.deep.equal(costco10kParsed[field], `At field ${field}`);
-      }
-    }
+    expect(result).to.deep.equal(costco10kParsed);
   });
 
   it('should parse the xbrl for Transatlantic Capital Inc. 10k', async () => {
     const result = await parse('./test/sampleXbrlDocuments/transatlantic_capital_inc_10k.xml');
-
-    for (const field in result) {
-      if (transatlanticCapital10kParsed[field]) {
-        expect(result[field]).to.deep.equal(transatlanticCapital10kParsed[field], `At field ${field}`);
-      }
-    }
+    expect(result).to.deep.equal(transatlanticCapital10kParsed);
   });
 
   it('should parse the xbrl for WL Ross Holding Corp 10k', async () => {
     const result = await parse('./test/sampleXbrlDocuments/wl_ross_holding_corp_10k.xml');
-
-    for (const field in result) {
-      if (wlRossHolingCorp10kParsed[field]) {
-        expect(result[field]).to.deep.equal(wlRossHolingCorp10kParsed[field], `At field ${field}`);
-      }
-    }
+    expect(result).to.deep.equal(wlRossHolingCorp10kParsed);
   });
 
   it('should parse the xbrl for Sweets and Treats 10q', async () => {
     const result = await parse('./test/sampleXbrlDocuments/sweets_and_treats_10q.xml');
-
-    for (const field in result) {
-      if (sweetsAndTreats10qParsed[field]) {
-        expect(result[field]).to.deep.equal(sweetsAndTreats10qParsed[field], `At field ${field}`);
-      }
-    }
+    expect(result).to.deep.equal(sweetsAndTreats10qParsed);
   });
 
   it('should parse the xbrl for Ruby Tuesday 10q', async () => {
     const result = await parse('./test/sampleXbrlDocuments/ruby_tuesday_10q.xml');
-
-    for (const field in result) {
-      if (rubyTuesday10qParsed[field]) {
-        expect(result[field]).to.deep.equal(rubyTuesday10qParsed[field], `At field ${field}`);
-      }
-    }
+    expect(result).to.deep.equal(rubyTuesday10qParsed);
   });
 
   it('should parse the xbrl for Google/Alphabet 10k', async () => {
     const result = await parse('./test/sampleXbrlDocuments/google_10k.xml');
+    expect(result).to.deep.equal(google10kParsed);
+  })
+    .timeout(5000)
+    .slow(3125);
 
-    for (const field in result) {
-      if (google10kParsed[field]) {
-        expect(result[field]).to.deep.equal(google10kParsed[field], `At field ${field}`);
-      }
-    }
+  it('should parse the xbrl for Apple 10Q 2020', async () => {
+    const result = await parse('./test/sampleXbrlDocuments/xbrls/2020/aapl/xml_0.xml');
+
+    expect(result).to.deep.equal(aapl10Q2020Parsed);
   });
+
+  it('should parse the xbrl for Tesla 10Q 2020', async () => {
+    const result = await parse('./test/sampleXbrlDocuments/xbrls/2020/tsla/xml_0.xml');
+
+    expect(result).to.deep.equal(tsla10Q2020Parsed);
+  })
+    .timeout(5000)
+    .slow(3125);
 });
 
 function loadData() {
-  const tsla10K2020Parsed = {
+  const tsla10Q2020Parsed = {
     TotalRevenue: 6036000,
     OperatingRevenue: 6036000,
     CostofRevenue: 4769000,
@@ -167,76 +145,84 @@ function loadData() {
     FreeCashFlow: 398000
   };
 
-  const aapl10K2020Parsed = {
-    TotalRevenue: 59685000,
-    OperatingRevenue: 59685000,
-    CostofRevenue: 37005000,
-    GrossProfit: 22680000,
-    OperatingExpense: 9589000,
-    OperatingIncome: 13091000,
-    NetNonOperatingInterestIncomeExpense: 204000,
-    OtherIncomeExpense: -158000,
-    PretaxIncome: 13137000,
-    TaxProvision: 1884000,
-    NetIncomeCommonStockholders: 11253000,
-    DilutedNIAvailabletoComStockholders: 11253000,
-    BasicEPS: 0,
-    DilutedEPS: 0,
-    BasicAverageShares: 17250292,
-    DilutedAverageShares: 17419152,
-    TotalOperatingIncomeasReported: 13091000,
-    TotalExpenses: 46594000,
-    'NetIncomefromContinuing&DiscontinuedOperation': 11253000,
-    NormalizedIncome: 11253000,
-    InterestIncome: 901000,
-    InterestExpense: 697000,
-    NetInterestIncome: 204000,
-    EBIT: 13834000,
-    EBITDA: null,
-    ReconciledCostofRevenue: 37005000,
-    ReconciledDepreciation: 2752000,
-    NetIncomefromContinuingOperationNetMinorityInterest: 11253000,
-    NormalizedEBITDA: 16586000,
-    TaxRateforCalcs: 0,
-    TaxEffectofUnusualItems: 0,
-    TotalAssets: 317344000,
-    CurrentAssets: 140065000,
-    'Totalnon-currentassets': 177279000,
-    TotalLiabilitiesNetMinorityInterest: 245062000,
-    CurrentLiabilities: 95318000,
-    TotalNonCurrentLiabilitiesNetMinorityInterest: 149744000,
-    TotalEquityGrossMinorityInterest: 72282000,
-    "Stockholders'Equity": 72282000,
-    TotalCapitalization: 166330000,
-    CommonStockEquity: 72282000,
-    NetTangibleAssets: 72282000,
-    WorkingCapital: 44747000,
-    InvestedCapital: 185005000,
-    TangibleBookValue: 72282000,
-    TotalDebt: 112723000,
-    NetDebt: 79340000,
-    ShareIssued: 17135756,
-    OrdinarySharesNumber: 17135756,
-    OperatingCashFlow: 16271000,
-    CashFlowfromContinuingOperatingActivities: 16271000,
-    InvestingCashFlow: -5165000,
-    CashFlowfromContinuingInvestingActivities: -5165000,
-    FinancingCashFlow: -19116000,
-    CashFlowfromContinuingFinancingActivities: -19116000,
-    EndCashPosition: 35039000,
-    ChangesinCash: -8010000,
-    BeginningCashPosition: 43049000,
-    IncomeTaxPaidSupplementalData: 905000,
-    InterestPaidSupplementalData: 586000,
-    CapitalExpenditure: -1565000,
-    IssuanceofCapitalStock: 0,
-    IssuanceofDebt: 9547000,
-    RepaymentofDebt: -7379000,
-    RepurchaseofCapitalStock: -15891000,
-    FreeCashFlow: 14706000
+  const aapl10Q2020Parsed = {
+    EntityRegistrantName: 'Apple Inc.',
+    CurrentFiscalYearEndDate: '--09-26',
+    EntityCentralIndexKey: '0000320193',
+    EntityFilerCategory: 'Large accelerated filer',
+    TradingSymbol: 'AAPL',
+    DocumentPeriodEndDate: 'June 27, 2020',
+    DocumentFiscalYearFocus: '2020',
+    DocumentFiscalPeriodFocus: 'Q3',
+    DocumentFiscalYearFocusContext: 'i656f36c938ba410686db6183a7b1d75c_D20190929-20200627',
+    DocumentFiscalPeriodFocusContext: 'i656f36c938ba410686db6183a7b1d75c_D20190929-20200627',
+    DocumentType: '10-Q',
+    IncomeStatementPeriodYTD: '2019-09-29',
+    ContextForInstants: 'i06d107b9e8124e8f980ce20843670f50_I20200627',
+    ContextForDurations: 'i656f36c938ba410686db6183a7b1d75c_D20190929-20200627',
+    BalanceSheetDate: 'June 27, 2020',
+    Assets: 317344000000,
+    CurrentAssets: 140065000000,
+    NoncurrentAssets: 177279000000,
+    LiabilitiesAndEquity: 317344000000,
+    Liabilities: 245062000000,
+    CurrentLiabilities: 95318000000,
+    NoncurrentLiabilities: 149744000000,
+    CommitmentsAndContingencies: 0,
+    TemporaryEquity: 0,
+    Equity: 72282000000,
+    EquityAttributableToNoncontrollingInterest: 0,
+    EquityAttributableToParent: 72282000000,
+    Revenues: 209817000000,
+    CostOfRevenue: 129550000000,
+    GrossProfit: 80267000000,
+    OperatingExpenses: 28754000000,
+    CostsAndExpenses: 158304000000,
+    OtherOperatingIncome: 0,
+    OperatingIncomeLoss: 51513000000,
+    NonoperatingIncomeLoss: 677000000,
+    InterestAndDebtExpense: 0,
+    IncomeBeforeEquityMethodInvestments: 52190000000,
+    IncomeFromEquityMethodInvestments: 0,
+    IncomeFromContinuingOperationsBeforeTax: 52190000000,
+    IncomeTaxExpenseBenefit: 7452000000,
+    IncomeFromContinuingOperationsAfterTax: 44738000000,
+    IncomeFromDiscontinuedOperations: 0,
+    ExtraordinaryItemsGainLoss: 0,
+    NetIncomeLoss: 11253000000,
+    NetIncomeAvailableToCommonStockholdersBasic: 44738000000,
+    PreferredStockDividendsAndOtherAdjustments: 0,
+    NetIncomeAttributableToNoncontrollingInterest: 0,
+    NetIncomeAttributableToParent: 44738000000,
+    OtherComprehensiveIncome: -102000000,
+    ComprehensiveIncome: 44636000000,
+    ComprehensiveIncomeAttributableToParent: 44636000000,
+    ComprehensiveIncomeAttributableToNoncontrollingInterest: 0,
+    NonoperatingIncomeLossPlusInterestAndDebtExpense: 677000000,
+    NonoperatingIncomePlusInterestAndDebtExpensePlusIncomeFromEquityMethodInvestments: 677000000,
+    NetCashFlow: -15185000000,
+    NetCashFlowsOperating: 60098000000,
+    NetCashFlowsInvesting: -9820000000,
+    NetCashFlowsFinancing: -65463000000,
+    NetCashFlowsOperatingContinuing: 60098000000,
+    NetCashFlowsInvestingContinuing: -9820000000,
+    NetCashFlowsFinancingContinuing: -65463000000,
+    NetCashFlowsOperatingDiscontinued: 0,
+    NetCashFlowsInvestingDiscontinued: 0,
+    NetCashFlowsFinancingDiscontinued: 0,
+    NetCashFlowsDiscontinued: 0,
+    ExchangeGainsLosses: 0,
+    NetCashFlowsContinuing: -15185000000,
+    SGR: 1.6242375835027587,
+    ROA: 0.14097635373600886,
+    ROE: 0.6189369414238677,
+    ROS: 0.21322390464071073
   };
 
   const wlRossHolingCorp10kParsed = {
+    DocumentFiscalPeriodFocusContext: 'P01_01_2015To12_31_2015',
+    DocumentFiscalYearFocusContext: 'P01_01_2015To12_31_2015',
+    DocumentPeriodEndDate: '2015-12-31',
     NetCashFlowsContinuing: -791415,
     NetCashFlowsFinancingDiscontinued: 0,
     NetIncomeAvailableToCommonStockholdersBasic: -332612,
@@ -298,11 +284,13 @@ function loadData() {
     BalanceSheetDate: '2015-12-31',
     NetCashFlowsFinancing: 300000,
     ROA: 0.0006642854297876821,
-    ExtraordaryItemsGainLoss: 0,
+    ExtraordinaryItemsGainLoss: 0,
     IncomeFromContinuingOperationsAfterTax: 332612,
     NetIncomeAttributableToNoncontrollingInterest: 0,
     InterestAndDebtExpense: 0,
-    FiscalYear: '--12-31'
+    CurrentFiscalYearEndDate: '--12-31',
+    ROS: Number.POSITIVE_INFINITY,
+    SGR: null
   };
 
   const amazon10kParsed = {
@@ -369,83 +357,94 @@ function loadData() {
     BalanceSheetDate: '2015-12-31',
     NetCashFlowsFinancing: -3763000000,
     ROA: 0.009107022798117474,
-    ExtraordaryItemsGainLoss: 0,
+    ExtraordinaryItemsGainLoss: 0,
     IncomeFromContinuingOperationsAfterTax: 596000000,
     NetIncomeAttributableToNoncontrollingInterest: 0,
     InterestAndDebtExpense: 0,
-    FiscalYear: '--12-31'
+    CurrentFiscalYearEndDate: '--12-31',
+    DocumentFiscalPeriodFocusContext: 'FD2015Q4YTD',
+    DocumentFiscalYearFocusContext: 'FD2015Q4YTD',
+    DocumentPeriodEndDate: '2015-12-31'
   };
 
   const cannabicsPharmaceuticals10kParsed = {
-    NetCashFlowsContinuing: 0,
-    NetCashFlowsFinancingDiscontinued: 0,
-    NetIncomeAvailableToCommonStockholdersBasic: -1279138,
-    NonoperatingIncomeLossPlusInterestAndDebtExpense: 0,
-    NoncurrentLiabilities: 0,
-    IncomeFromContinuingOperationsBeforeTax: -1279138,
-    ContextForInstants: 'AsOf2015-08-31',
-    Equity: -309626,
-    EntityFilerCategory: 'Smaller Reporting Company',
-    DocumentType: '10-K',
-    ContextForDurations: 'From2004-09-15to2015-08-31',
-    NetCashFlowsOperatingContinuing: 0,
-    OtherComprehensiveIncome: 0,
-    ComprehensiveIncomeAttributableToNoncontrollingInterest: 0,
-    NetCashFlowsInvestingContinuing: 0,
-    NetIncomeAttributableToParent: -1279138,
-    NetCashFlowsInvestingDiscontinued: 0,
-    ROE: 4.131235748935813,
-    PreferredStockDividendsAndOtherAdjustments: 0,
-    NonoperatingIncomePlusInterestAndDebtExpensePlusIncomeFromEquityMethodInvestments: 0,
-    NetCashFlowsOperating: 0,
-    CostsAndExpenses: 0,
-    CurrentAssets: 25503,
-    IncomeFromEquityMethodInvestments: 0,
-    NoncurrentAssets: 3201,
     EntityRegistrantName: 'Cannabics Pharmaceuticals Inc.',
-    IncomeTaxExpenseBenefit: 0,
-    CostOfRevenue: 0,
-    ExchangeGainsLosses: 0,
-    CurrentLiabilities: 338330,
-    Assets: 28704,
-    NetCashFlowsDiscontinued: 0,
-    LiabilitiesAndEquity: 28704,
-    OperatingIncomeLoss: -1279138,
-    TemporaryEquity: 0,
-    NonoperatingIncomeLoss: 0,
-    OtherOperatingIncome: 0,
-    EquityAttributableToParent: -309626,
-    GrossProfit: 0,
-    TradingSymbol: 'Field not found',
-    NetCashFlow: 0,
-    DocumentFiscalYearFocus: '2015',
-    IncomeFromDiscontinuedOperations: 0,
-    NetCashFlowsInvesting: 0,
-    ComprehensiveIncome: -1279138,
-    Revenues: 0,
-    CommitmentsAndContingencies: 0,
-    OperatingExpenses: 0,
-    IncomeStatementPeriodYTD: '2004-09-15',
-    Liabilities: 338330,
-    NetCashFlowsFinancingContinuing: 0,
+    CurrentFiscalYearEndDate: '--08-31',
     EntityCentralIndexKey: '0001343009',
-    EquityAttributableToNoncontrollingInterest: 0,
-    ComprehensiveIncomeAttributableToParent: -1279138,
+    EntityFilerCategory: 'Smaller Reporting Company',
+    TradingSymbol: 'Field not found',
+    DocumentPeriodEndDate: '2015-08-31',
+    DocumentFiscalYearFocus: '2015',
     DocumentFiscalPeriodFocus: 'FY',
-    NetIncomeLoss: -1279138,
-    IncomeBeforeEquityMethodInvestments: -1279138,
-    NetCashFlowsOperatingDiscontinued: 0,
+    DocumentFiscalYearFocusContext: 'From2014-09-01to2015-08-31',
+    DocumentFiscalPeriodFocusContext: 'From2014-09-01to2015-08-31',
+    DocumentType: '10-K',
+    IncomeStatementPeriodYTD: '2004-09-15',
+    ContextForInstants: 'AsOf2015-08-31',
+    ContextForDurations: 'From2004-09-15to2015-08-31',
     BalanceSheetDate: '2015-08-31',
-    NetCashFlowsFinancing: 0,
-    ROA: -44.563057413600895,
-    ExtraordaryItemsGainLoss: 0,
-    IncomeFromContinuingOperationsAfterTax: -1279138,
-    NetIncomeAttributableToNoncontrollingInterest: 0,
+    Assets: 28704,
+    CurrentAssets: 25503,
+    NoncurrentAssets: 3201,
+    LiabilitiesAndEquity: 28704,
+    Liabilities: 338330,
+    CurrentLiabilities: 338330,
+    NoncurrentLiabilities: 0,
+    CommitmentsAndContingencies: 0,
+    TemporaryEquity: 0,
+    Equity: -309626,
+    EquityAttributableToNoncontrollingInterest: 0,
+    EquityAttributableToParent: -309626,
+    Revenues: 0,
+    CostOfRevenue: 0,
+    GrossProfit: 0,
+    OperatingExpenses: 539526,
+    CostsAndExpenses: 0,
+    OtherOperatingIncome: 0,
+    OperatingIncomeLoss: -539526,
+    NonoperatingIncomeLoss: 0,
     InterestAndDebtExpense: 0,
-    FiscalYear: '--08-31'
+    IncomeBeforeEquityMethodInvestments: -541387,
+    IncomeFromEquityMethodInvestments: 0,
+    IncomeFromContinuingOperationsBeforeTax: -541387,
+    IncomeTaxExpenseBenefit: 0,
+    IncomeFromContinuingOperationsAfterTax: -1279138,
+    IncomeFromDiscontinuedOperations: 0,
+    ExtraordinaryItemsGainLoss: 0,
+    NetIncomeLoss: -541387,
+    NetIncomeAvailableToCommonStockholdersBasic: -541387,
+    PreferredStockDividendsAndOtherAdjustments: 0,
+    NetIncomeAttributableToNoncontrollingInterest: 0,
+    NetIncomeAttributableToParent: -541387,
+    OtherComprehensiveIncome: 0,
+    ComprehensiveIncome: -1279138,
+    ComprehensiveIncomeAttributableToParent: -1279138,
+    ComprehensiveIncomeAttributableToNoncontrollingInterest: 0,
+    NonoperatingIncomeLossPlusInterestAndDebtExpense: -1861,
+    NonoperatingIncomePlusInterestAndDebtExpensePlusIncomeFromEquityMethodInvestments: -1861,
+    NetCashFlow: -73539,
+    NetCashFlowsOperating: -179055,
+    NetCashFlowsInvesting: -3040,
+    NetCashFlowsFinancing: 108556,
+    NetCashFlowsOperatingContinuing: -179055,
+    NetCashFlowsInvestingContinuing: -3040,
+    NetCashFlowsFinancingContinuing: 108556,
+    NetCashFlowsOperatingDiscontinued: 0,
+    NetCashFlowsInvestingDiscontinued: 0,
+    NetCashFlowsFinancingDiscontinued: 0,
+    NetCashFlowsDiscontinued: 0,
+    ExchangeGainsLosses: 0,
+    NetCashFlowsContinuing: -73539,
+    SGR: null,
+    ROA: -44.563057413600895,
+    ROE: 4.131235748935813,
+    ROS: -Infinity
   };
 
   const costco10kParsed = {
+    DocumentFiscalPeriodFocusContext: 'D141201_151130',
+    DocumentFiscalYearFocusContext: 'D141201_151130',
+    DocumentPeriodEndDate: '2015-11-30',
     NetCashFlowsContinuing: 7001,
     NetCashFlowsFinancingDiscontinued: 0,
     NetIncomeAvailableToCommonStockholdersBasic: -23719,
@@ -507,14 +506,19 @@ function loadData() {
     BalanceSheetDate: '2015-11-30',
     NetCashFlowsFinancing: 30000,
     ROA: -1.7388021406055274,
-    ExtraordaryItemsGainLoss: 0,
+    ExtraordinaryItemsGainLoss: 0,
     IncomeFromContinuingOperationsAfterTax: -23719,
     NetIncomeAttributableToNoncontrollingInterest: 0,
     InterestAndDebtExpense: 0,
-    FiscalYear: '--11-30'
+    CurrentFiscalYearEndDate: '--11-30',
+    ROS: Number.NEGATIVE_INFINITY,
+    SGR: null
   };
 
   const transatlanticCapital10kParsed = {
+    DocumentFiscalPeriodFocusContext: 'From2014-01-01to2014-12-31',
+    DocumentFiscalYearFocusContext: 'From2014-01-01to2014-12-31',
+    DocumentPeriodEndDate: '2014-12-31',
     NetCashFlowsContinuing: 0,
     NetCashFlowsFinancingDiscontinued: 0,
     NetIncomeAvailableToCommonStockholdersBasic: -312535,
@@ -575,14 +579,20 @@ function loadData() {
     NetCashFlowsOperatingDiscontinued: 0,
     BalanceSheetDate: '2014-12-31',
     NetCashFlowsFinancing: 69155,
-    ExtraordaryItemsGainLoss: 0,
+    ExtraordinaryItemsGainLoss: 0,
     IncomeFromContinuingOperationsAfterTax: -312535,
     NetIncomeAttributableToNoncontrollingInterest: 0,
     InterestAndDebtExpense: 0,
-    FiscalYear: '--12-31'
+    CurrentFiscalYearEndDate: '--12-31',
+    ROA: Number.NEGATIVE_INFINITY,
+    ROS: Number.NEGATIVE_INFINITY,
+    SGR: null
   };
 
   const sweetsAndTreats10qParsed = {
+    DocumentFiscalPeriodFocusContext: 'From2015-08-01to2015-10-31',
+    DocumentFiscalYearFocusContext: 'From2015-08-01to2015-10-31',
+    DocumentPeriodEndDate: '2015-10-31',
     NetCashFlowsContinuing: -47,
     NetCashFlowsFinancingDiscontinued: 0,
     NetIncomeAvailableToCommonStockholdersBasic: -2065,
@@ -646,14 +656,17 @@ function loadData() {
     BalanceSheetDate: '2015-10-31',
     NetCashFlowsFinancing: 18659,
     ROA: -0.3556665518429211,
-    ExtraordaryItemsGainLoss: 0,
+    ExtraordinaryItemsGainLoss: 0,
     IncomeFromContinuingOperationsAfterTax: -2065,
     NetIncomeAttributableToNoncontrollingInterest: 0,
     InterestAndDebtExpense: 0,
-    FiscalYear: '--07-31'
+    CurrentFiscalYearEndDate: '--07-31'
   };
 
   const rubyTuesday10qParsed = {
+    DocumentPeriodEndDate: '2015-12-01',
+    DocumentFiscalYearFocusContext: 'd_2015-06-03_2015-12-01',
+    DocumentFiscalPeriodFocusContext: 'd_2015-06-03_2015-12-01',
     NetCashFlowsContinuing: -30080000,
     NetCashFlowsFinancingDiscontinued: 0,
     NetIncomeAvailableToCommonStockholdersBasic: -19993000,
@@ -717,14 +730,18 @@ function loadData() {
     BalanceSheetDate: '2015-12-01',
     NetCashFlowsFinancing: -9639000,
     ROA: -0.02261349729334772,
-    ExtraordaryItemsGainLoss: 0,
+    ExtraordinaryItemsGainLoss: 0,
     IncomeFromContinuingOperationsAfterTax: -19993000,
     NetIncomeAttributableToNoncontrollingInterest: 0,
     InterestAndDebtExpense: 0,
-    FiscalYear: '--05-31'
+    CurrentFiscalYearEndDate: '--05-31'
   };
 
   const google10kParsed = {
+    CurrentFiscalYearEndDate: '--12-31',
+    DocumentFiscalPeriodFocusContext: 'FD2015Q4YTD',
+    DocumentFiscalYearFocusContext: 'FD2015Q4YTD',
+    DocumentPeriodEndDate: '2015-12-31',
     NetCashFlowsContinuing: -1364000000,
     NetCashFlowsFinancingDiscontinued: 0,
     NetIncomeAvailableToCommonStockholdersBasic: 15826000000,
@@ -745,27 +762,27 @@ function loadData() {
     SGR: 0.15721800678957132,
     NetCashFlowsInvestingDiscontinued: 0,
     ROE: 0.13585859005576287,
-    PreferredStockDividendsAndOtherAdjustments: 0,
+    PreferredStockDividendsAndOtherAdjustments: 522000000,
     NonoperatingIncomePlusInterestAndDebtExpensePlusIncomeFromEquityMethodInvestments: 291000000,
     NetCashFlowsOperating: 26024000000,
     CostsAndExpenses: 55629000000,
     CurrentAssets: 90114000000,
-    IncomeFromEquityMethodInvestments: 0,
+    IncomeFromEquityMethodInvestments: -227000000,
     NoncurrentAssets: 57347000000,
     EntityRegistrantName: 'Alphabet Inc.',
     IncomeTaxExpenseBenefit: 3303000000,
-    CostOfRevenue: 0,
-    ExchangeGainsLosses: 0,
+    CostOfRevenue: 28164000000,
+    ExchangeGainsLosses: -434000000,
     CurrentLiabilities: 19310000000,
     Assets: 147461000000,
     NetCashFlowsDiscontinued: 0,
     LiabilitiesAndEquity: 147461000000,
     OperatingIncomeLoss: 19360000000,
     TemporaryEquity: 0,
-    NonoperatingIncomeLoss: 0,
+    NonoperatingIncomeLoss: 291000000,
     OtherOperatingIncome: 0,
     EquityAttributableToParent: 120331000000,
-    GrossProfit: 0,
+    GrossProfit: 46825000000,
     TradingSymbol: 'GOOG, GOOGL',
     NetCashFlow: -1798000000,
     DocumentFiscalYearFocus: '2015',
@@ -774,7 +791,7 @@ function loadData() {
     ComprehensiveIncome: 14447000000,
     Revenues: 74989000000,
     CommitmentsAndContingencies: 0,
-    OperatingExpenses: 0,
+    OperatingExpenses: 27465000000,
     IncomeStatementPeriodYTD: '2015-01-01',
     Liabilities: 27130000000,
     NetCashFlowsFinancingContinuing: -3677000000,
@@ -788,7 +805,7 @@ function loadData() {
     BalanceSheetDate: '2015-12-31',
     NetCashFlowsFinancing: -3677000000,
     ROA: 0.11086321128976476,
-    ExtraordaryItemsGainLoss: 0,
+    ExtraordinaryItemsGainLoss: 0,
     IncomeFromContinuingOperationsAfterTax: 16348000000,
     NetIncomeAttributableToNoncontrollingInterest: 0,
     InterestAndDebtExpense: 0
@@ -803,7 +820,7 @@ function loadData() {
     sweetsAndTreats10qParsed,
     rubyTuesday10qParsed,
     google10kParsed,
-    aapl10K2020Parsed,
-    tsla10K2020Parsed
+    aapl10Q2020Parsed,
+    tsla10Q2020Parsed
   };
 }

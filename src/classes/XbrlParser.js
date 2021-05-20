@@ -1,7 +1,7 @@
-import { promises as fs } from 'fs';
 import _ from 'lodash';
+import { promises as fs } from 'fs';
 import { toJson } from 'xml2json';
-import { loadFundamentalAccountingConcepts } from './FundamentalAccountingConcepts.js';
+import { loadFundamentalAccountingConcepts } from '../utils/FundamentalAccountingConcepts.js';
 import { Context } from './Context.js';
 import {
   canConstructDateWithMultipleComponents,
@@ -11,20 +11,27 @@ import {
   searchVariable,
   search,
   formatNumber
-} from './utils.js';
+} from '../utils/utils.js';
+
+import { Facts } from './fact/Facts.js';
 
 export class XbrlParser {
-  constructor() {
+  constructor(data) {
     this.document = '';
     this.fields = {};
+    this.init(data);
   }
 
-  async parseFile(filePath) {
-    return this.parseStr(await fs.readFile(filePath, 'utf8'));
+  static async parse(path) {
+    return await XbrlParser.parseStr(await fs.readFile(path, 'utf8'));
   }
 
-  async parseStr(string) {
-    const data = JSON.parse(toJson(string));
+  static async parseStr(str) {
+    const data = JSON.parse(toJson(str));
+    return Promise.resolve(new XbrlParser(data).fields);
+  }
+
+  init(data) {
     this.document = data[Object.keys(data)[0]];
     this.loadField('EntityRegistrantName');
     this.loadField('CurrentFiscalYearEndDate');
@@ -38,22 +45,25 @@ export class XbrlParser {
     this.loadField('DocumentFiscalPeriodFocus', 'DocumentFiscalPeriodFocusContext', 'contextRef');
     this.loadField('DocumentType');
 
+    this.documentType = this.fields['DocumentType'];
+
     const currentYearEnd = this.getYear();
     if (!currentYearEnd) throw new Error('No end year found');
 
     const durations = this.getContextForDurations(currentYearEnd);
-
     this.fields['IncomeStatementPeriodYTD'] = durations.incomeStatementPeriodYTD;
-
     this.fields['ContextForInstants'] = this.getContextForInstants(currentYearEnd);
-
     this.fields['ContextForDurations'] = durations.contextForDurations;
-
     this.fields['BalanceSheetDate'] = currentYearEnd;
-
     // Load the rest of the facts
     loadFundamentalAccountingConcepts(this);
+  }
 
+  getDocument() {
+    return this.document;
+  }
+
+  getFields() {
     return this.fields;
   }
 
@@ -195,6 +205,13 @@ export class XbrlParser {
     const scale = parseInt(factNode.scale) || 0;
     return factValue * 10 ** scale;
   }
+
+  getFact(concept) {
+    return new Facts(this, concept);
+    // return new Facts(search(this.document, concept), this.getContexts(), this.documentType);
+  }
 }
 
 export default XbrlParser;
+// i526a018599e94bbcb5c99ec1159f1a4d_D20200329-20200627
+// us-gaap:NetIncomeLoss

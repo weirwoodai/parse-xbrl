@@ -7,19 +7,37 @@
     "Pharma",
     "TSLA",
     "WLRH",
+    "adapter",
+    "bracket",
+    "coenraads",
+    "colorizer",
     "corejs",
     "csst",
+    "esbenp",
     "gaap",
     "gryffindor",
+    "hbenl",
     "hufflepuf",
+    "indent",
+    "mocha",
     "naruto",
     "newmsft",
     "numcommadecimal",
     "numdotdecimal",
+    "oderwat",
+    "pair",
+    "prettier",
+    "rainbow",
     "ravenclawn",
     "slytherin",
+    "test",
+    "vscode",
     "xbrl",
     "xbrldi",
     "xbrli"
-  ]
+  ],
+  "[javascript]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }
