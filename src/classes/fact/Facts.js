@@ -24,7 +24,7 @@ export class Facts {
   }
 
   getMostRecent() {
-    if (this.#facts.length === 0) return null;
+    if (this.#facts.length === 0) return { value: null };
     return this.#facts.reduce(Fact.latest);
   }
 }

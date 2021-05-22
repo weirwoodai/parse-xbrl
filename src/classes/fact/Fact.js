@@ -16,23 +16,23 @@ export class Fact {
   }
 
   get value() {
-    if (Object.keys(this).some(k => k.includes('nil'))) return 0;
+    if (Object.keys(this.#fact).some(k => k.includes('nil'))) return null;
 
-    return this.sign * this.inner * this.scale;
+    return this._sign * this._inner * this._scale;
   }
 
-  get scale() {
+  get _scale() {
     return 10 ** (parseInt(this.#fact['scale']) || 0);
   }
 
-  get inner() {
+  get _inner() {
     if (typeof this.#fact['$t'] === 'string') {
       return parseFloat(formatNumber(this.#fact['format'], this.#fact['$t']));
     }
     return this.#fact['$t'];
   }
 
-  get sign() {
+  get _sign() {
     return this.#fact['sign'] === '-' ? -1 : 1;
   }
 
