@@ -58,7 +58,6 @@ describe('parse-xbrl', function () {
 
   it('should parse the xbrl for Apple 10Q 2020', async () => {
     const result = await parse('./test/sampleXbrlDocuments/xbrls/2020/aapl/xml_0.xml');
-
     expect(result).to.deep.equal(aapl10Q2020Parsed);
   })
     .timeout(5000)
@@ -66,7 +65,6 @@ describe('parse-xbrl', function () {
 
   it('should parse the xbrl for Tesla 10Q 2020', async () => {
     const result = await parse('./test/sampleXbrlDocuments/xbrls/2020/tsla/xml_0.xml');
-
     expect(result).to.deep.equal(tsla10Q2020Parsed);
   })
     .timeout(5000)
