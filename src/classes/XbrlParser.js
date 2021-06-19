@@ -56,6 +56,8 @@ export class XbrlParser {
     this.fields['ContextForDurations'] = durations.contextForDurations;
     this.fields['BalanceSheetDate'] = currentYearEnd;
     // Load the rest of the facts
+    this.hashmapContext = this.getHashmapContexts();
+
     loadFundamentalAccountingConcepts(this);
   }
 
@@ -91,6 +93,13 @@ export class XbrlParser {
     if (result) return result.map(c => new Context(c));
 
     throw new Error('No contexts found!');
+  }
+
+  getHashmapContexts() {
+    const toHashMap = (hashMap, b) => ({ ...hashMap, [b.id]: b });
+    return this.getContexts()
+      .filter(c => !c.hasExplicitMember())
+      .reduce(toHashMap, {});
   }
 
   getDurationContexts() {

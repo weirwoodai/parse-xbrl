@@ -77,7 +77,7 @@ describe('parse-xbrl', function () {
     console.log('bac parsed');
     expect(result).to.deep.equal(bac10K2020Parsed);
   })
-    .timeout(5000)
+    .timeout(500000)
     .slow(3125);
 });
 
