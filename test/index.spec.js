@@ -10,7 +10,8 @@ const {
   rubyTuesday10qParsed,
   google10kParsed,
   aapl10Q2020Parsed,
-  tsla10Q2020Parsed
+  tsla10Q2020Parsed,
+  bac10K2020Parsed
 } = loadData();
 
 describe('parse-xbrl', function () {
@@ -69,9 +70,84 @@ describe('parse-xbrl', function () {
   })
     .timeout(5000)
     .slow(3125);
+
+  it.only('should parse the xbrl for Bank of America 10K 2020', async () => {
+    console.log('parsing bac');
+    const result = await parse('./test/sampleXbrlDocuments/xbrls/2020/bac/xml_0.xml');
+    console.log('bac parsed');
+    expect(result).to.deep.equal(bac10K2020Parsed);
+  })
+    .timeout(5000)
+    .slow(3125);
 });
 
 function loadData() {
+  const bac10K2020Parsed = {
+    EntityRegistrantName: 'Bank of America Corporation',
+    CurrentFiscalYearEndDate: '--12-31',
+    EntityCentralIndexKey: '0000070858',
+    EntityFilerCategory: 'Large Accelerated Filer',
+    TradingSymbol: 'BAC',
+    DocumentPeriodEndDate: '2019-12-31',
+    DocumentFiscalYearFocus: '2019',
+    DocumentFiscalPeriodFocus: 'FY',
+    DocumentFiscalYearFocusContext: 'FD2019Q4YTD',
+    DocumentFiscalPeriodFocusContext: 'FD2019Q4YTD',
+    DocumentType: '10-K',
+    IncomeStatementPeriodYTD: '2019-01-01',
+    ContextForInstants: 'FI2019Q4_srt_ConsolidatedEntitiesAxis_srt_ParentCompanyMember',
+    ContextForDurations: 'FD2019Q4YTD',
+    BalanceSheetDate: '2019-12-31',
+    Assets: 2434079000000,
+    CurrentAssets: null,
+    NoncurrentAssets: null,
+    LiabilitiesAndEquity: 490660000000,
+    Liabilities: 225850000000,
+    CurrentLiabilities: null,
+    NoncurrentLiabilities: null,
+    CommitmentsAndContingencies: null,
+    TemporaryEquity: null,
+    Equity: 264810000000,
+    EquityAttributableToNoncontrollingInterest: null,
+    EquityAttributableToParent: 264810000000,
+    Revenues: 91244000000,
+    CostOfRevenue: null,
+    GrossProfit: null,
+    OperatingExpenses: 7991000000,
+    CostsAndExpenses: null,
+    OtherOperatingIncome: null,
+    OperatingIncomeLoss: null,
+    NonoperatingIncomeLoss: null,
+    InterestAndDebtExpense: null,
+    IncomeBeforeEquityMethodInvestments: null,
+    IncomeFromEquityMethodInvestments: null,
+    IncomeFromContinuingOperationsBeforeTax: 32754000000,
+    IncomeTaxExpenseBenefit: 341000000,
+    IncomeFromContinuingOperationsAfterTax: null,
+    IncomeFromDiscontinuedOperations: null,
+    ExtraordinaryItemsGainLoss: null,
+    NetIncomeLoss: 27430000000,
+    NetIncomeAvailableToCommonStockholdersBasic: 25998000000,
+    PreferredStockDividendsAndOtherAdjustments: null,
+    NetIncomeAttributableToNoncontrollingInterest: null,
+    NetIncomeAttributableToParent: 27430000000,
+    OtherComprehensiveIncome: null,
+    ComprehensiveIncome: 5578000000,
+    ComprehensiveIncomeAttributableToParent: 5578000000,
+    ComprehensiveIncomeAttributableToNoncontrollingInterest: null,
+    NetCashFlow: null,
+    NetCashFlowsOperating: 46037000000,
+    NetCashFlowsInvesting: -19131000000,
+    NetCashFlowsFinancing: -26352000000,
+    NetCashFlowsOperatingContinuing: null,
+    NetCashFlowsInvestingContinuing: null,
+    NetCashFlowsFinancingContinuing: null,
+    NetCashFlowsOperatingDiscontinued: null,
+    NetCashFlowsInvestingDiscontinued: null,
+    NetCashFlowsFinancingDiscontinued: null,
+    NetCashFlowsDiscontinued: null,
+    ExchangeGainsLosses: null
+  };
   const tsla10Q2020Parsed = {
     EntityRegistrantName: 'Tesla, Inc.',
     CurrentFiscalYearEndDate: '--12-31',
@@ -752,6 +828,7 @@ function loadData() {
     rubyTuesday10qParsed,
     google10kParsed,
     aapl10Q2020Parsed,
-    tsla10Q2020Parsed
+    tsla10Q2020Parsed,
+    bac10K2020Parsed
   };
 }

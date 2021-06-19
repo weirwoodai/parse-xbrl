@@ -11,10 +11,15 @@ export class Facts {
     const toHashMap = (hashMap, b) => ({ ...hashMap, [b.id]: b });
 
     const contexts = xbrlParser.getContexts();
-    this.#contexts = contexts.filter(c => !c.hasExplicitMember()).reduce(toHashMap, {});
 
     this.#concept = concept;
+
     const facts = search(xbrlParser.document, this.#concept);
+
+    this.#contexts = contexts
+      .filter(c => !c.hasExplicitMember() && facts.find(({ contextRef }) => contextRef === c.id))
+      .reduce(toHashMap, {});
+
     this.#facts = facts
       .filter(f => this.#contexts[f.contextRef] instanceof Context)
       .map(f => new Fact(this.#concept, f, this.#contexts[f.contextRef]))
