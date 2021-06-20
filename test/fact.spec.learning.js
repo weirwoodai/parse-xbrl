@@ -1,12 +1,14 @@
 import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-
 import { XbrlParser } from '../src/index.js';
+
 chai.use(chaiAsPromised);
 
 describe('fact-parse-xbrl', () => {
   it('should return the document', async () => {
-    const apple10kOutput = await XbrlParser.parse('./test/sampleXbrlDocuments/xbrls/2020/aapl/xml_0.xml');
+    const apple10kOutput = await XbrlParser.parse(
+      './test/sampleXbrlDocuments/xbrls/2020/aapl/xml_0.xml'
+    );
     const document = apple10kOutput.getDocument();
     expect(document).to.not.be.null;
   });

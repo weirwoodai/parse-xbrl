@@ -1,24 +1,24 @@
-import _ from 'lodash';
 import { promises as fs } from 'fs';
+import _ from 'lodash';
 import { toJson } from 'xml2json';
 import { loadFundamentalAccountingConcepts } from '../utils/FundamentalAccountingConcepts.js';
-import { Context } from './Context.js';
 import {
   canConstructDateWithMultipleComponents,
   constructDateWithMultipleComponents,
+  formatNumber,
   getPropertyFrom,
   getVariable,
-  searchVariable,
   search,
-  formatNumber
+  searchVariable
 } from '../utils/utils.js';
-
+import { Context } from './Context.js';
 import { Facts } from './fact/Facts.js';
 
 export class XbrlParser {
   constructor(data) {
     this.document = '';
     this.fields = {};
+    this.contextsMap = null;
     this.init(data);
   }
 
@@ -56,8 +56,6 @@ export class XbrlParser {
     this.fields['ContextForDurations'] = durations.contextForDurations;
     this.fields['BalanceSheetDate'] = currentYearEnd;
     // Load the rest of the facts
-    this.hashmapContext = this.getHashmapContexts();
-
     loadFundamentalAccountingConcepts(this);
   }
 
@@ -95,11 +93,18 @@ export class XbrlParser {
     throw new Error('No contexts found!');
   }
 
-  getHashmapContexts() {
-    const toHashMap = (hashMap, b) => ({ ...hashMap, [b.id]: b });
-    return this.getContexts()
-      .filter(c => !c.hasExplicitMember())
-      .reduce(toHashMap, {});
+  getContextsMap() {
+    if (this.contextsMap === null) {
+      const toHashMap = (hashMap, b) => {
+        hashMap[b.id] = b;
+        return hashMap;
+      };
+      this.contextsMap = this.getContexts()
+        .filter(c => !c.hasExplicitMember())
+        .reduce(toHashMap, {});
+    }
+
+    return this.contextsMap;
   }
 
   getDurationContexts() {

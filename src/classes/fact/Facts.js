@@ -12,7 +12,7 @@ export class Facts {
 
     const facts = search(xbrlParser.document, this.#concept);
 
-    this.#contexts = xbrlParser.hashmapContext;
+    this.#contexts = xbrlParser.getContextsMap();
 
     this.#facts = facts
       .filter(f => this.#contexts[f.contextRef] instanceof Context)

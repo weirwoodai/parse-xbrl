@@ -13,7 +13,7 @@
     "prebuild": "rimraf $npm_package_config_build_directory",
     "build": "npm run prepare",
     "pretest": "npm run build",
-    "test": "mocha --spec 'test/**/*.spec.js' ",
+    "test": "mocha --spec 'test/**/*.spec.js'",
     "test:watch": "npm run test -- --watch",
     "test:learning": "mocha test/fact.spec.learning.js",
     "pretty": "prettier --write './{src,test}/**/*.js'"
