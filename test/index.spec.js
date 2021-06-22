@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import { parse } from '../dist/index.js';
+
 const {
   wlRossHolingCorp10kParsed,
   amazon10kParsed,
@@ -71,7 +72,7 @@ describe('parse-xbrl', function () {
     .timeout(5000)
     .slow(3125);
 
-  it.only('should parse the xbrl for Bank of America 10K 2020', async () => {
+  it('should parse the xbrl for Bank of America 10K 2020', async () => {
     const result = await parse('./test/sampleXbrlDocuments/xbrls/2020/bac/xml_0.xml');
     expect(result).to.deep.equal(bac10K2020Parsed);
   })

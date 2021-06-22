@@ -7,12 +7,12 @@ export class Facts {
   #contexts;
   #concept;
 
-  constructor(xbrlParser, concept) {
+  constructor(xbrlParser, contexts, concept) {
     this.#concept = concept;
 
     const facts = search(xbrlParser.document, this.#concept);
 
-    this.#contexts = xbrlParser.getContextsMap();
+    this.#contexts = contexts;
 
     this.#facts = facts
       .filter(f => this.#contexts[f.contextRef] instanceof Context)

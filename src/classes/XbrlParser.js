@@ -1,5 +1,8 @@
+import { fork } from 'child_process';
 import { promises as fs } from 'fs';
 import _ from 'lodash';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
 import { toJson } from 'xml2json';
 import { loadFundamentalAccountingConcepts } from '../utils/FundamentalAccountingConcepts.js';
 import {
@@ -16,10 +19,11 @@ import { Facts } from './fact/Facts.js';
 
 export class XbrlParser {
   constructor(data) {
-    this.document = '';
-    this.fields = {};
+    this.data = data;
+    this.document = this.data[Object.keys(this.data)[0]];
+    this.fields = null;
     this.contextsMap = null;
-    this.init(data);
+    this.contextsMapPromise = null;
   }
 
   static async parse(path) {
@@ -27,12 +31,14 @@ export class XbrlParser {
   }
 
   static async parseStr(str) {
-    const data = JSON.parse(toJson(str));
-    return Promise.resolve(new XbrlParser(data).fields);
+    const data = toJson(str, { object: true });
+    return await new XbrlParser(data).getFields();
   }
 
-  init(data) {
-    this.document = data[Object.keys(data)[0]];
+  async _readData() {
+    // start building
+    this.getContextsMap();
+    this.fields = {};
     this.loadField('EntityRegistrantName');
     this.loadField('CurrentFiscalYearEndDate');
     this.loadField('EntityCentralIndexKey');
@@ -47,29 +53,31 @@ export class XbrlParser {
 
     this.documentType = this.fields['DocumentType'];
 
-    const currentYearEnd = this.getYear();
+    const currentYearEnd = await this.getYear();
     if (!currentYearEnd) throw new Error('No end year found');
 
     const durations = this.getContextForDurations(currentYearEnd);
     this.fields['IncomeStatementPeriodYTD'] = durations.incomeStatementPeriodYTD;
-    this.fields['ContextForInstants'] = this.getContextForInstants(currentYearEnd);
+    this.fields['ContextForInstants'] = await this.getContextForInstants(currentYearEnd);
     this.fields['ContextForDurations'] = durations.contextForDurations;
     this.fields['BalanceSheetDate'] = currentYearEnd;
     // Load the rest of the facts
-    loadFundamentalAccountingConcepts(this);
+    await loadFundamentalAccountingConcepts(this);
   }
 
   getDocument() {
     return this.document;
   }
 
-  getFields() {
+  async getFields() {
+    if (this.fields === null) await this._readData();
     return this.fields;
   }
 
-  getYear() {
-    const currentEnd = this.fields['DocumentPeriodEndDate'];
-    const currentYear = this.fields['DocumentFiscalYearFocus'];
+  async getYear() {
+    const fields = await this.getFields();
+    const currentEnd = fields['DocumentPeriodEndDate'];
+    const currentYear = fields['DocumentFiscalYearFocus'];
 
     if (canConstructDateWithMultipleComponents(currentEnd, currentYear)) {
       return constructDateWithMultipleComponents(currentEnd, currentYear);
@@ -85,23 +93,45 @@ export class XbrlParser {
     this.fields[fieldName] = getPropertyFrom(this.document, concept, key);
   }
 
-  getContexts() {
+  getRawContexts() {
     const [obj, paths] = [this.document, ['xbrli:context', 'context']];
     const result = getVariable(obj, paths) ?? searchVariable(obj, paths);
-    if (result) return result.map(c => new Context(c));
+    if (!result) throw new Error('No contexts found!');
 
-    throw new Error('No contexts found!');
+    return result;
   }
 
-  getContextsMap() {
-    if (this.contextsMap === null) {
-      const toHashMap = (hashMap, b) => {
-        hashMap[b.id] = b;
-        return hashMap;
-      };
-      this.contextsMap = this.getContexts()
-        .filter(c => !c.hasExplicitMember())
-        .reduce(toHashMap, {});
+  getContexts() {
+    return this.getRawContexts().map(c => new Context(c));
+  }
+
+  async getContextsMap() {
+    if (this.contextsMap === null && this.contextsMapPromise === null) {
+      this.contextsMapPromise = new Promise((resolve, reject) => {
+        const __dirname = dirname(fileURLToPath(import.meta.url));
+        const getContextsMapFile = join(__dirname, '..', 'utils', 'getContextsMap.js');
+        const worker = fork(getContextsMapFile);
+        worker.on('message', ({ type, data }) => {
+          if (type === 'ready') worker.send({ type: 'contexts', data: this.getRawContexts() });
+
+          if (type === 'contexts') {
+            this.contextsMap = data.reduce((hashMap, [id, context]) => {
+              hashMap[id] = new Context(context);
+              return hashMap;
+            }, {});
+            worker.send({ type: 'stop' });
+            resolve();
+          }
+        });
+
+        worker.once('exit', code => {
+          if (code !== 0) return reject(`Worker exited with code ${code}`);
+        });
+      });
+    }
+
+    if (this.contextsMap === null && this.contextsMapPromise !== null) {
+      await this.contextsMapPromise;
     }
 
     return this.contextsMap;
@@ -154,7 +184,7 @@ export class XbrlParser {
     };
   }
 
-  getContextForInstants(endDate) {
+  async getContextForInstants(endDate) {
     let contextForInstants = null;
     const contexts = this.getInstantContexts();
 
@@ -171,15 +201,16 @@ export class XbrlParser {
     }
 
     if (contextForInstants !== null) return contextForInstants;
-    return this.lookForAlternativeInstantsContext();
+    return await this.lookForAlternativeInstantsContext();
   }
 
-  lookForAlternativeInstantsContext() {
+  async lookForAlternativeInstantsContext() {
+    const fields = await this.getFields();
     let altContextId = null;
     let altNodesArr = _.filter(
       _.get(this.document, ['xbrli:context', 'xbrli:period', 'xbrli:instant']) ||
         _.get(this.document, ['context', 'period', 'instant']),
-      node => node === this.fields['BalanceSheetDate']
+      node => node === fields['BalanceSheetDate']
     );
 
     for (let h = 0; h < altNodesArr.length; h += 1) {
@@ -192,12 +223,14 @@ export class XbrlParser {
     return altContextId;
   }
 
-  getInstantFactValue(concept) {
-    return this.getFactValue(concept, this.fields['ContextForInstants']);
+  async getInstantFactValue(concept) {
+    const fields = await this.getFields();
+    return this.getFactValue(concept, fields['ContextForInstants']);
   }
 
-  getDurationFactValue(concept) {
-    return this.getFactValue(concept, this.fields['ContextForDurations']);
+  async getDurationFactValue(concept) {
+    const fields = await this.getFields();
+    return this.getFactValue(concept, fields['ContextForDurations']);
   }
 
   getFactValue(concept, contextReference) {
@@ -220,12 +253,10 @@ export class XbrlParser {
     return factValue * 10 ** scale;
   }
 
-  getFact(concept) {
-    return new Facts(this, concept);
-    // return new Facts(search(this.document, concept), this.getContexts(), this.documentType);
+  async getFact(concept) {
+    const contexts = await this.getContextsMap();
+    return new Facts(this, contexts, concept);
   }
 }
 
 export default XbrlParser;
-// i526a018599e94bbcb5c99ec1159f1a4d_D20200329-20200627
-// us-gaap:NetIncomeLoss

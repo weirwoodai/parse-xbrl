@@ -23,6 +23,10 @@ export class Context {
     return Math.floor((endDate - startDate) / MS_IN_A_DAY);
   }
 
+  get raw() {
+    return this.#context;
+  }
+
   _qualifiesAs10K() {
     return TWO_WEEKS_TO_YEAR_END < this.durationDays && this.durationDays < TWO_WEEKS_FROM_YEAR_END;
   }
