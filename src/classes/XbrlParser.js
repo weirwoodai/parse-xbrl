@@ -1,24 +1,24 @@
-import _ from 'lodash';
 import { promises as fs } from 'fs';
+import _ from 'lodash';
 import { toJson } from 'xml2json';
 import { loadFundamentalAccountingConcepts } from '../utils/FundamentalAccountingConcepts.js';
-import { Context } from './Context.js';
 import {
   canConstructDateWithMultipleComponents,
   constructDateWithMultipleComponents,
+  formatNumber,
   getPropertyFrom,
   getVariable,
-  searchVariable,
   search,
-  formatNumber
+  searchVariable
 } from '../utils/utils.js';
-
+import { Context } from './Context.js';
 import { Facts } from './fact/Facts.js';
 
 export class XbrlParser {
   constructor(data) {
     this.document = '';
     this.fields = {};
+    this.contextsMap = null;
     this.init(data);
   }
 
@@ -91,6 +91,20 @@ export class XbrlParser {
     if (result) return result.map(c => new Context(c));
 
     throw new Error('No contexts found!');
+  }
+
+  getContextsMap() {
+    if (this.contextsMap === null) {
+      const toHashMap = (hashMap, b) => {
+        hashMap[b.id] = b;
+        return hashMap;
+      };
+      this.contextsMap = this.getContexts()
+        .filter(c => !c.hasExplicitMember())
+        .reduce(toHashMap, {});
+    }
+
+    return this.contextsMap;
   }
 
   getDurationContexts() {
