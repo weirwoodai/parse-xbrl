@@ -1,7 +1,7 @@
 {
-  "name": "parse-xbrl",
+  "name": "@weirwoodai/parse-xbrl",
   "description": "Module to parse xbrl documents and output json.",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "type": "module",
   "main": "dist/index.js",
   "typings": "index.d.ts",
@@ -26,7 +26,8 @@
     "node": ">=10"
   },
   "publishConfig": {
-    "registry": "http://registry.npmjs.org"
+    "registry": "http://registry.npmjs.org",
+    "access": "public"
   },
   "author": "Emily Coco <emilymcoco@gmail.com>",
   "contributors": [
@@ -36,7 +37,6 @@
     },
     {
       "name": "Ricard Mallafre",
-      "email": "r.mallafre.lopez@gmail.com",
       "url": "https://github.com/nikensss"
     }
   ],
@@ -68,7 +68,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:emilycoco/parse-xbrl.git"
+    "url": "git@github.com:weirwoodai/parse-xbrl.git"
   },
   "keywords": [
     "xbrl",
@@ -79,6 +79,6 @@
     "sec"
   ],
   "bugs": {
-    "url": "git@github.com:emilycoco/parse-xbrl.git/issues"
+    "url": "git@github.com:weirwoodai/parse-xbrl.git/issues"
   }
 }
