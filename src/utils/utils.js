@@ -29,9 +29,7 @@ export function constructDateWithMultipleComponents(monthDay, year) {
   try {
     return new Date(monthDay + year).toISOString();
   } catch (err) {
-    throw new Error(
-      `Cannot construct proper date with ${monthDay} and ${year}`
-    );
+    throw new Error(`Cannot construct proper date with ${monthDay} and ${year}`);
   }
 }
 
@@ -70,7 +68,7 @@ export function searchVariable(object, paths) {
 }
 
 export function findVariable(object, paths, cb) {
-  for (let path of paths) {
+  for (const path of paths) {
     const result = cb(object, path);
     if (result) return result;
   }
