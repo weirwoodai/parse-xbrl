@@ -71,7 +71,7 @@ describe('parse-xbrl', function () {
     .timeout(5000)
     .slow(3125);
 
-  it.only('should parse the xbrl for Bank of America 10K 2020', async () => {
+  it('should parse the xbrl for Bank of America 10K 2020', async () => {
     const result = await parse('./test/sampleXbrlDocuments/xbrls/2020/bac/xml_0.xml');
     expect(result).to.deep.equal(bac10K2020Parsed);
   })
@@ -426,9 +426,9 @@ function loadData() {
     DocumentFiscalYearFocusContext: 'From2014-09-01to2015-08-31',
     DocumentFiscalPeriodFocusContext: 'From2014-09-01to2015-08-31',
     DocumentType: '10-K',
-    IncomeStatementPeriodYTD: '2004-09-15',
+    IncomeStatementPeriodYTD: '2014-09-01',
     ContextForInstants: 'AsOf2015-08-31',
-    ContextForDurations: 'From2004-09-15to2015-08-31',
+    ContextForDurations: 'From2014-09-01to2015-08-31',
     BalanceSheetDate: '2015-08-31',
     Assets: 28704,
     CurrentAssets: 25503,

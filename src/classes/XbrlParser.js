@@ -50,10 +50,10 @@ export class XbrlParser {
     const currentYearEnd = this.getYear();
     if (!currentYearEnd) throw new Error('No end year found');
 
-    const durations = this.getContextForDurations(currentYearEnd);
-    this.fields['IncomeStatementPeriodYTD'] = durations.incomeStatementPeriodYTD;
+    const contextForDurations = this.getContextForDurations();
+    this.fields['IncomeStatementPeriodYTD'] = contextForDurations.getStartDate();
     this.fields['ContextForInstants'] = this.getContextForInstants(currentYearEnd);
-    this.fields['ContextForDurations'] = durations.contextForDurations;
+    this.fields['ContextForDurations'] = contextForDurations.id;
     this.fields['BalanceSheetDate'] = currentYearEnd;
     // Load the rest of the facts
     loadFundamentalAccountingConcepts(this);
@@ -125,33 +125,16 @@ export class XbrlParser {
     return allNodes.flat().filter(n => typeof n !== 'undefined');
   }
 
-  getContextForDurations(endDate) {
-    let contextForDurations = null;
-    let startDateYTD = '2099-01-01';
+  getContextForDurations() {
     const contexts = this.getDurationContexts();
+    const context = contexts.find(c => c.id === this.fields.DocumentFiscalYearFocusContext);
 
-    const nodes = this.getNodeList([
-      'us-gaap:CashAndCashEquivalentsPeriodIncreaseDecrease',
-      'us-gaap:CashPeriodIncreaseDecrease',
-      'us-gaap:NetIncomeLoss',
-      'dei:DocumentPeriodEndDate'
-    ]);
+    if (!context) throw new Error('Could not find context for durations');
 
-    for (const node of nodes) {
-      contexts
-        .filter(context => context.represents(node, endDate))
-        .forEach(context => {
-          if (context.startsBefore(startDateYTD)) {
-            startDateYTD = context.getStartDate();
-            contextForDurations = context.id;
-          }
-        });
-    }
-
-    return {
-      contextForDurations: contextForDurations,
-      incomeStatementPeriodYTD: startDateYTD
-    };
+    return context; // {
+    //   contextForDurations: context.id,
+    //   incomeStatementPeriodYTD: context.getStartDate()
+    // };
   }
 
   getContextForInstants(endDate) {
@@ -227,5 +210,3 @@ export class XbrlParser {
 }
 
 export default XbrlParser;
-// i526a018599e94bbcb5c99ec1159f1a4d_D20200329-20200627
-// us-gaap:NetIncomeLoss
