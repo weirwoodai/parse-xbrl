@@ -50,10 +50,11 @@ export class XbrlParser {
     const currentYearEnd = this.getYear();
     if (!currentYearEnd) throw new Error('No end year found');
 
-    const contextForDurations = this.getContextForDurations();
-    this.fields['IncomeStatementPeriodYTD'] = contextForDurations.getStartDate();
-    this.fields['ContextForInstants'] = this.getContextForInstants(currentYearEnd);
-    this.fields['ContextForDurations'] = contextForDurations.id;
+    const durationContext = this.getContextForDurations();
+    this.fields['ContextForDurations'] = durationContext.id;
+    const instantContext = this.getContextForInstants(durationContext.getEndDate());
+    this.fields['ContextForInstants'] = instantContext.id;
+    this.fields['IncomeStatementPeriodYTD'] = durationContext.getStartDate();
     this.fields['BalanceSheetDate'] = currentYearEnd;
     // Load the rest of the facts
     loadFundamentalAccountingConcepts(this);
@@ -99,30 +100,22 @@ export class XbrlParser {
         hashMap[b.id] = b;
         return hashMap;
       };
-      this.contextsMap = this.getContexts()
-        .filter(c => !c.hasExplicitMember())
-        .reduce(toHashMap, {});
+      this.contextsMap = this.getContextsWithoutExplicitMember().reduce(toHashMap, {});
     }
 
     return this.contextsMap;
   }
 
+  getContextsWithoutExplicitMember() {
+    return this.getContexts().filter(c => !c.hasExplicitMember());
+  }
+
   getDurationContexts() {
-    return this.getContexts().filter(c => c.isDuration());
+    return this.getContextsWithoutExplicitMember().filter(c => c.isDuration());
   }
 
   getInstantContexts() {
-    return this.getContexts().filter(c => c.isInstant());
-  }
-
-  getNodeList(names) {
-    const allNodes = [];
-
-    for (const name of names) {
-      allNodes.push(...search(this.document, name));
-    }
-
-    return allNodes.flat().filter(n => typeof n !== 'undefined');
+    return this.getContextsWithoutExplicitMember().filter(c => c.isInstant());
   }
 
   getContextForDurations() {
@@ -131,30 +124,14 @@ export class XbrlParser {
 
     if (!context) throw new Error('Could not find context for durations');
 
-    return context; // {
-    //   contextForDurations: context.id,
-    //   incomeStatementPeriodYTD: context.getStartDate()
-    // };
+    return context;
   }
 
   getContextForInstants(endDate) {
-    let contextForInstants = null;
-    const contexts = this.getInstantContexts();
+    const contextForInstants = this.getInstantContexts().find(c => c.getEndDate() === endDate);
+    if (!contextForInstants) throw new Error('Context for instants not found');
 
-    // Uses the concept ASSETS to find the correct instant context
-    const nodes = this.getNodeList([
-      'us-gaap:Assets',
-      'us-gaap:AssetsCurrent',
-      'us-gaap:LiabilitiesAndStockholdersEquity'
-    ]);
-
-    for (const node of nodes) {
-      const context = contexts.filter(context => context.represents(node, endDate)).pop();
-      if (context) contextForInstants = context.id;
-    }
-
-    if (contextForInstants !== null) return contextForInstants;
-    return this.lookForAlternativeInstantsContext();
+    return contextForInstants;
   }
 
   lookForAlternativeInstantsContext() {
@@ -205,7 +182,6 @@ export class XbrlParser {
 
   getFact(concept) {
     return new Facts(this, concept);
-    // return new Facts(search(this.document, concept), this.getContexts(), this.documentType);
   }
 }
 
