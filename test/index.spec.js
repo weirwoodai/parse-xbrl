@@ -71,7 +71,7 @@ describe('parse-xbrl', function () {
     .timeout(5000)
     .slow(3125);
 
-  it.only('should parse the xbrl for Bank of America 10K 2020', async () => {
+  it('should parse the xbrl for Bank of America 10K 2020', async () => {
     const result = await parse('./test/sampleXbrlDocuments/xbrls/2020/bac/xml_0.xml');
     expect(result).to.deep.equal(bac10K2020Parsed);
   })
@@ -93,14 +93,14 @@ function loadData() {
     DocumentFiscalPeriodFocusContext: 'FD2019Q4YTD',
     DocumentType: '10-K',
     IncomeStatementPeriodYTD: '2019-01-01',
-    ContextForInstants: 'FI2019Q4_srt_ConsolidatedEntitiesAxis_srt_ParentCompanyMember',
+    ContextForInstants: 'FI2019Q4',
     ContextForDurations: 'FD2019Q4YTD',
     BalanceSheetDate: '2019-12-31',
     Assets: 2434079000000,
     CurrentAssets: null,
     NoncurrentAssets: null,
-    LiabilitiesAndEquity: 490660000000,
-    Liabilities: 225850000000,
+    LiabilitiesAndEquity: 2434079000000,
+    Liabilities: 2169269000000,
     CurrentLiabilities: null,
     NoncurrentLiabilities: null,
     CommitmentsAndContingencies: null,
@@ -120,7 +120,7 @@ function loadData() {
     IncomeBeforeEquityMethodInvestments: null,
     IncomeFromEquityMethodInvestments: null,
     IncomeFromContinuingOperationsBeforeTax: 32754000000,
-    IncomeTaxExpenseBenefit: 341000000,
+    IncomeTaxExpenseBenefit: 5324000000,
     IncomeFromContinuingOperationsAfterTax: null,
     IncomeFromDiscontinuedOperations: null,
     ExtraordinaryItemsGainLoss: null,
@@ -134,9 +134,9 @@ function loadData() {
     ComprehensiveIncomeAttributableToParent: 5578000000,
     ComprehensiveIncomeAttributableToNoncontrollingInterest: null,
     NetCashFlow: null,
-    NetCashFlowsOperating: 46037000000,
-    NetCashFlowsInvesting: -19131000000,
-    NetCashFlowsFinancing: -26352000000,
+    NetCashFlowsOperating: 61777000000,
+    NetCashFlowsInvesting: -80630000000,
+    NetCashFlowsFinancing: 3377000000,
     NetCashFlowsOperatingContinuing: null,
     NetCashFlowsInvestingContinuing: null,
     NetCashFlowsFinancingContinuing: null,
@@ -426,9 +426,9 @@ function loadData() {
     DocumentFiscalYearFocusContext: 'From2014-09-01to2015-08-31',
     DocumentFiscalPeriodFocusContext: 'From2014-09-01to2015-08-31',
     DocumentType: '10-K',
-    IncomeStatementPeriodYTD: '2004-09-15',
+    IncomeStatementPeriodYTD: '2014-09-01',
     ContextForInstants: 'AsOf2015-08-31',
-    ContextForDurations: 'From2004-09-15to2015-08-31',
+    ContextForDurations: 'From2014-09-01to2015-08-31',
     BalanceSheetDate: '2015-08-31',
     Assets: 28704,
     CurrentAssets: 25503,

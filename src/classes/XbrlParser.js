@@ -50,10 +50,11 @@ export class XbrlParser {
     const currentYearEnd = this.getYear();
     if (!currentYearEnd) throw new Error('No end year found');
 
-    const durations = this.getContextForDurations(currentYearEnd);
-    this.fields['IncomeStatementPeriodYTD'] = durations.incomeStatementPeriodYTD;
-    this.fields['ContextForInstants'] = this.getContextForInstants(currentYearEnd);
-    this.fields['ContextForDurations'] = durations.contextForDurations;
+    const durationContext = this.getContextForDurations();
+    this.fields['ContextForDurations'] = durationContext.id;
+    const instantContext = this.getContextForInstants(durationContext.getEndDate());
+    this.fields['ContextForInstants'] = instantContext.id;
+    this.fields['IncomeStatementPeriodYTD'] = durationContext.getStartDate();
     this.fields['BalanceSheetDate'] = currentYearEnd;
     // Load the rest of the facts
     loadFundamentalAccountingConcepts(this);
@@ -99,79 +100,38 @@ export class XbrlParser {
         hashMap[b.id] = b;
         return hashMap;
       };
-      this.contextsMap = this.getContexts()
-        .filter(c => !c.hasExplicitMember())
-        .reduce(toHashMap, {});
+      this.contextsMap = this.getContextsWithoutExplicitMember().reduce(toHashMap, {});
     }
 
     return this.contextsMap;
   }
 
+  getContextsWithoutExplicitMember() {
+    return this.getContexts().filter(c => !c.hasExplicitMember());
+  }
+
   getDurationContexts() {
-    return this.getContexts().filter(c => c.isDuration());
+    return this.getContextsWithoutExplicitMember().filter(c => c.isDuration());
   }
 
   getInstantContexts() {
-    return this.getContexts().filter(c => c.isInstant());
+    return this.getContextsWithoutExplicitMember().filter(c => c.isInstant());
   }
 
-  getNodeList(names) {
-    const allNodes = [];
-
-    for (const name of names) {
-      allNodes.push(...search(this.document, name));
-    }
-
-    return allNodes.flat().filter(n => typeof n !== 'undefined');
-  }
-
-  getContextForDurations(endDate) {
-    let contextForDurations = null;
-    let startDateYTD = '2099-01-01';
+  getContextForDurations() {
     const contexts = this.getDurationContexts();
+    const context = contexts.find(c => c.id === this.fields.DocumentFiscalYearFocusContext);
 
-    const nodes = this.getNodeList([
-      'us-gaap:CashAndCashEquivalentsPeriodIncreaseDecrease',
-      'us-gaap:CashPeriodIncreaseDecrease',
-      'us-gaap:NetIncomeLoss',
-      'dei:DocumentPeriodEndDate'
-    ]);
+    if (!context) throw new Error('Could not find context for durations');
 
-    for (const node of nodes) {
-      contexts
-        .filter(context => context.represents(node, endDate))
-        .forEach(context => {
-          if (context.startsBefore(startDateYTD)) {
-            startDateYTD = context.getStartDate();
-            contextForDurations = context.id;
-          }
-        });
-    }
-
-    return {
-      contextForDurations: contextForDurations,
-      incomeStatementPeriodYTD: startDateYTD
-    };
+    return context;
   }
 
   getContextForInstants(endDate) {
-    let contextForInstants = null;
-    const contexts = this.getInstantContexts();
+    const contextForInstants = this.getInstantContexts().find(c => c.getEndDate() === endDate);
+    if (!contextForInstants) throw new Error('Context for instants not found');
 
-    // Uses the concept ASSETS to find the correct instant context
-    const nodes = this.getNodeList([
-      'us-gaap:Assets',
-      'us-gaap:AssetsCurrent',
-      'us-gaap:LiabilitiesAndStockholdersEquity'
-    ]);
-
-    for (const node of nodes) {
-      const context = contexts.filter(context => context.represents(node, endDate)).pop();
-      if (context) contextForInstants = context.id;
-    }
-
-    if (contextForInstants !== null) return contextForInstants;
-    return this.lookForAlternativeInstantsContext();
+    return contextForInstants;
   }
 
   lookForAlternativeInstantsContext() {
@@ -222,10 +182,7 @@ export class XbrlParser {
 
   getFact(concept) {
     return new Facts(this, concept);
-    // return new Facts(search(this.document, concept), this.getContexts(), this.documentType);
   }
 }
 
 export default XbrlParser;
-// i526a018599e94bbcb5c99ec1159f1a4d_D20200329-20200627
-// us-gaap:NetIncomeLoss

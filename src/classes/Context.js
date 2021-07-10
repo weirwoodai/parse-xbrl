@@ -101,22 +101,21 @@ export class Context {
   }
 
   hasExplicitMember() {
-    if (this.getExplicitMember()) return true;
-    return false;
+    return this.getExplicitMember() ? true : false;
   }
 
   getExplicitMember() {
     const paths = [
       ['xbrli:entity', 'xbrli:segment', 'xbrldi:explicitMember'],
-      ['entity', 'segment', 'explicitMember']
+      ['entity', 'segment', 'explicitMember'],
+      ['entity', 'segment', 'xbrldi:explicitMember']
     ];
     return getVariable(this.#context, paths);
   }
 
   represents(node, date) {
-    return (
-      this.id === node.contextRef && this.isSameDate(date, MS_IN_A_DAY) && !this.hasExplicitMember()
-    );
+    if (this.hasExplicitMember()) return false;
+    return this.id === node.contextRef && this.isSameDate(date, MS_IN_A_DAY);
   }
 
   startsBefore(date) {
