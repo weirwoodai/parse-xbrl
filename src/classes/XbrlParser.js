@@ -119,6 +119,8 @@ export class XbrlParser {
   }
 
   getContextForDurations() {
+    if (this.fields['ContextForDurations']) return this.fields['ContextForDurations'];
+
     const contexts = this.getDurationContexts();
     const context = contexts.find(c => c.id === this.fields.DocumentFiscalYearFocusContext);
 
@@ -128,6 +130,8 @@ export class XbrlParser {
   }
 
   getContextForInstants(endDate) {
+    if (this.fields['ContextForInstants']) return this.fields['ContextForInstants'];
+
     const contextForInstants = this.getInstantContexts().find(c => c.getEndDate() === endDate);
     if (!contextForInstants) throw new Error('Context for instants not found');
 
