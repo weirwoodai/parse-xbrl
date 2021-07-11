@@ -173,15 +173,15 @@ function loadData() {
     CurrentLiabilities: 95318000000,
     NoncurrentLiabilities: 149744000000,
     Equity: 72282000000,
-    Revenues: null,
+    Revenues: 59685000000,
     CostOfRevenue: 37005000000,
     GrossProfit: 22680000000,
     OperatingExpenses: 9589000000,
     NetIncome: 11253000000,
-    NetCashFlow: null,
-    NetCashFlowsOperating: null,
-    NetCashFlowsInvesting: null,
-    NetCashFlowsFinancing: null
+    NetCashFlow: 39789000000,
+    NetCashFlowsOperating: 20576000000,
+    NetCashFlowsInvesting: 5531000000,
+    NetCashFlowsFinancing: -21357000000
   };
 
   const wlRossHolingCorp10kParsed = {
@@ -348,7 +348,6 @@ function loadData() {
     CurrentLiabilities: 144968,
     NoncurrentLiabilities: null,
     Equity: -144968,
-
     Revenues: null,
     CostOfRevenue: null,
     GrossProfit: null,
@@ -384,7 +383,6 @@ function loadData() {
     CurrentLiabilities: 40315,
     NoncurrentLiabilities: null,
     Equity: -34509,
-
     Revenues: 153,
     CostOfRevenue: 99,
     GrossProfit: 54,
@@ -420,7 +418,6 @@ function loadData() {
     CurrentLiabilities: 89391000,
     NoncurrentLiabilities: null,
     Equity: 446822000,
-
     Revenues: 260956000,
     CostOfRevenue: null,
     GrossProfit: null,
@@ -456,7 +453,6 @@ function loadData() {
     CurrentLiabilities: 19310000000,
     NoncurrentLiabilities: null,
     Equity: 120331000000,
-
     Revenues: 74989000000,
     CostOfRevenue: 28164000000,
     GrossProfit: null,
